@@ -65,7 +65,9 @@
 									<?php } ?>
 								</select>
 							</div>
-							<div class="g24-col-sm-2"> <input type="button" onclick="check_empty('3')" class="btn btn-primary" value="แสดงผล"> </div>
+							<div class="g24-col-sm-2"> 
+								<button class="btn btn-primary btn-after-input" type="button"  onclick="check_empty('3')"><span> แสดงผล</span></button>
+							</div>
 						</div>
 					</form>
 				</div>

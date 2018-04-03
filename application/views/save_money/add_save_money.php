@@ -22,7 +22,7 @@
 					<input value="<?php echo empty($row['account_id']) ? '' : $row['mem_id'] ?>" class="form-control m-b-1" type="text" name="mem_id" id="member_id_add" required readonly>
 				</div>
 				<a class="col-sm-1" data-toggle="modal" data-target="#search_member_add_modal" href="#">
-					<button style="padding: 6px 11px 4px;" id="" type="button" class="btn btn-info"><span class="icon icon-search"></span></button>
+					<button id="" type="button" class="btn btn-info btn-search"><span class="icon icon-search"></span></button>
 				</a>			
 			</div>
 

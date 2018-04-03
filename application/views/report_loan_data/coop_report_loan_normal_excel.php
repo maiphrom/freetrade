@@ -117,11 +117,15 @@ if($month!=''){
 $sheet = 0;
 $where = '';
 if(@$day != '' && @$month != ''){
-	$where .= " AND createdatetime LIKE '".@$year.'-'.sprintf("%02d",@$month).'-'.sprintf("%02d",@$day)."%'";
+	$s_date = $year.'-'.sprintf("%02d",@$month).'-'.sprintf("%02d",@$day).' 00:00:00.000';
+	$e_date = $year.'-'.sprintf("%02d",@$month).'-'.sprintf("%02d",@$day).' 23:59:59.000';
+	$where .= " AND createdatetime BETWEEN '".$s_date."' AND '".$e_date."'";
 }else if($day == '' && $month != ''){
-	$where .= " AND createdatetime LIKE '".@$year.'-'.sprintf("%02d",@$month)."%'";
+	$s_date = $year.'-'.sprintf("%02d",@$month).'-01'.' 00:00:00.000';
+	$e_date = date('Y-m-t',strtotime($s_date)).' 23:59:59.000';
+	$where .= " AND createdatetime BETWEEN '".$s_date."' AND '".$e_date."'";
 }else{
-	$where .= " AND createdatetime LIKE '".@$year."%'";
+	$where .= " AND createdatetime BETWEEN '".$year."-01-01 00:00:00.000' AND '".$year."-12-31 23:59:59.000' ";
 }
 
 $this->db->select(array('loan_id','contract_number','createdatetime','member_id','employee_id','prename_short','firstname_th','lastname_th','level','period_amount','loan_amount','money_period_1','loan_reason'));

@@ -68,7 +68,9 @@
 								</div>
 							</div>
 						</div>
-						<div class="g24-col-sm-2"> <input type="button" onclick="check_empty('1')" class="btn btn-primary" value="แสดงผล"> </div>
+						<div class="g24-col-sm-2"> 
+							<button class="btn btn-primary btn-after-input" type="button"  onclick="check_empty('1')"><span> แสดงผล</span></button>
+						</div>
 					</div>
 				</form>
 				<form action="<?php echo base_url(PROJECTPATH.'/report_member_data/coop_report_member_in_out_excel'); ?>" id="form2" method="GET">
@@ -96,7 +98,9 @@
 								<?php } ?>
 							</select>
 						</div>
-						<div class="g24-col-sm-2"> <input type="button" onclick="check_empty('2')" class="btn btn-primary" value="แสดงผล"> </div>
+						<div class="g24-col-sm-2"> 
+							<button class="btn btn-primary btn-after-input" type="button"  onclick="check_empty('2')"><span> แสดงผล</span></button>
+						</div>
 					</div>
 				</form>
 				<form action="<?php echo base_url(PROJECTPATH.'/report_member_data/coop_report_member_in_out_excel'); ?>" id="form3" method="GET">
@@ -114,7 +118,9 @@
 								<?php } ?>
 							</select>
 						</div>
-						<div class="g24-col-sm-2"> <input type="button" onclick="check_empty('3')" class="btn btn-primary" value="แสดงผล"> </div>
+						<div class="g24-col-sm-2">
+							<button class="btn btn-primary btn-after-input" type="button"  onclick="check_empty('3')"><span> แสดงผล</span></button>
+						</div>
 					</div>
 				</form>
 				</div>

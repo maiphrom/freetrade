@@ -132,6 +132,13 @@
           'type' => 'text/javascript'
       );
       echo script_tag($link);
+	  
+      $link = array(
+          'src' => 'ci_project/assets/js/reset_time_out.js',
+          'language' => 'javascript',
+          'type' => 'text/javascript'
+      );
+      echo script_tag($link);
       ?>
     </head>
     <body class="<?php echo $body_class;?>">

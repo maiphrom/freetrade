@@ -120,7 +120,7 @@
 							</div>
 							<div class="form-group g24-col-sm-8">
 								<div class="g24-col-sm-24">
-								<button class="btn btn-primary btn_show" id="button_1" onclick="change_table('1')"><span class="icon icon-search" ></span> แสดง</button>
+								<button class="btn btn-primary btn_show btn-after-input" id="button_1" onclick="change_table('1')"><span class="icon icon-search" ></span> แสดง</button>
 								</div>
 							</div>
 						</div>
@@ -171,7 +171,7 @@
 							</div>
 							<div class="form-group g24-col-sm-8">
 								<div class="g24-col-sm-24">
-								<button class="btn btn-primary btn_show" id="button_2" onclick="change_table('2')"><span class="icon icon-search"></span> แสดง</button>
+								<button class="btn btn-primary btn_show btn-after-input" id="button_2" onclick="change_table('2')"><span class="icon icon-search"></span> แสดง</button>
 								</div>
 							</div>
 						</div>
@@ -226,7 +226,7 @@
 							</div>
 							<div class="form-group g24-col-sm-8">
 								<div class="g24-col-sm-24">
-								<button class="btn btn-success btn_show" id="button_3" onclick="change_table('3')"><span class="icon icon-search"></span> แสดง</button>
+								<button class="btn btn-success btn_show btn-after-input" id="button_3" onclick="change_table('3')"><span class="icon icon-search"></span> แสดง</button>
 								</div>
 							</div>
 						</div>

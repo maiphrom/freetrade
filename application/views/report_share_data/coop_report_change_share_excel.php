@@ -110,12 +110,16 @@ if($month!=''){
 $sheet = 0;
 
 	$where = '';
-	if($day != '' && $month != ''){
-		$where .= " AND create_date LIKE '".$year.'-'.sprintf("%02d",$month).'-'.sprintf("%02d",$day)."%'";
+	if($day != '' && $month != ''){		
+		$s_date = $year.'-'.sprintf("%02d",@$month).'-'.sprintf("%02d",@$day).' 00:00:00.000';
+		$e_date = $year.'-'.sprintf("%02d",@$month).'-'.sprintf("%02d",@$day).' 23:59:59.000';
+		$where .= " AND create_date BETWEEN '".$s_date."' AND '".$e_date."'";
 	}else if($day == '' && $month != ''){
-		$where .= " AND create_date LIKE '".$year.'-'.sprintf("%02d",$month)."%'";
+		$s_date = $year.'-'.sprintf("%02d",@$month).'-01'.' 00:00:00.000';
+		$e_date = date('Y-m-t',strtotime($s_date)).' 23:59:59.000';
+		$where .= " AND create_date BETWEEN '".$s_date."' AND '".$e_date."'";
 	}else{
-		$where .= " AND create_date LIKE '".$year."%'";
+		$where .= " AND create_date BETWEEN '".$year."-01-01 00:00:00.000' AND '".$year."-12-31 23:59:59.000' ";
 	}
 	$this->db->select(array('t1.member_id',
 							'employee_id',
@@ -152,12 +156,16 @@ $sheet = 0;
 	}
 ///////////////////////////////////////////////////////////////////////////	
 	$where = '';
-	if($day != '' && $month != ''){
-		$where .= " AND create_date LIKE '".$year.'-'.sprintf("%02d",$month).'-'.sprintf("%02d",$day)."%'";
+	if($day != '' && $month != ''){		
+		$s_date = $year.'-'.sprintf("%02d",@$month).'-'.sprintf("%02d",@$day).' 00:00:00.000';
+		$e_date = $year.'-'.sprintf("%02d",@$month).'-'.sprintf("%02d",@$day).' 23:59:59.000';
+		$where .= " AND create_date BETWEEN '".$s_date."' AND '".$e_date."'";
 	}else if($day == '' && $month != ''){
-		$where .= " AND create_date LIKE '".$year.'-'.sprintf("%02d",$month)."%'";
+		$s_date = $year.'-'.sprintf("%02d",@$month).'-01'.' 00:00:00.000';
+		$e_date = date('Y-m-t',strtotime($s_date)).' 23:59:59.000';
+		$where .= " AND create_date BETWEEN '".$s_date."' AND '".$e_date."'";
 	}else{
-		$where .= " AND create_date LIKE '".$year."%'";
+		$where .= " AND create_date BETWEEN '".$year."-01-01 00:00:00.000' AND '".$year."-12-31 23:59:59.000' ";
 	}
 	$this->db->select(array('t1.member_id',
 							'employee_id',

@@ -86,7 +86,7 @@
 
                             <div class="g24-col-sm-1">
                                 <a data-toggle="modal" data-target="#myModal" id="test" class="fancybox_share fancybox.iframe" href="#">
-                                    <button style="padding: 6px 11px 4px;" id="" type="button" class="btn btn-info"><span class="icon icon-search"></span>
+                                    <button id="" type="button" class="btn btn-info btn-search"><span class="icon icon-search"></span>
                                     </button>
                                 </a>
                             </div>

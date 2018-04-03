@@ -109,7 +109,9 @@ if($month!=''){
 }
 $sheet = 0;
 for($m = $month_start; $m <= $month_end; $m++){
-		$where_check = " AND t1.createdatetime LIKE '".$year.'-'.sprintf("%02d",$m)."%'";
+		$s_date = $year.'-'.sprintf("%02d",@$m).'-01'.' 00:00:00.000';
+		$e_date = date('Y-m-t',strtotime($s_date)).' 23:59:59.000';
+		$where_check = " AND t1.createdatetime BETWEEN '".$s_date."' AND '".$e_date."'";
 		$this->db->select(array('t1.id as loan_id'));
 		$this->db->from('coop_loan as t1');
 		$this->db->join('coop_mem_apply as t2','t1.member_id = t2.member_id','inner');
@@ -208,9 +210,13 @@ for($m = $month_start; $m <= $month_end; $m++){
 		$objPHPExcel->getActiveSheet()->getStyle('A'.$i_top.':M'.$i_bottom)->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
 		$where = '';
 		if($day != ''){
-			$where .= " AND t1.createdatetime LIKE '".$year.'-'.sprintf("%02d",$m).'-'.sprintf("%02d",$day)."%'";
+			$s_date = $year.'-'.sprintf("%02d",@$m).'-'.sprintf("%02d",@$day).' 00:00:00.000';
+			$e_date = $year.'-'.sprintf("%02d",@$m).'-'.sprintf("%02d",@$day).' 23:59:59.000';
+			$where .= " AND t1.createdatetime BETWEEN '".$s_date."' AND '".$e_date."'";
 		}else{
-			$where .= " AND t1.createdatetime LIKE '".$year.'-'.sprintf("%02d",$m)."%'";
+			$s_date = $year.'-'.sprintf("%02d",@$m).'-01'.' 00:00:00.000';
+			$e_date = date('Y-m-t',strtotime($s_date)).' 23:59:59.000';
+			$where .= " AND t1.createdatetime BETWEEN '".$s_date."' AND '".$e_date."'";
 		}
 		$this->db->select(array('t1.id as loan_id',
 								't1.contract_number',

@@ -41,7 +41,7 @@ function getAge($birthday) {
                     </div>
                     <div class="g24-col-sm-2" style="padding:0px;margin:0px;">
                       <a data-toggle="modal" data-target="#myModal" id="test" class="fancybox_share fancybox.iframe" href="#">
-						<button style="padding: 6px 11px 4px;" id="" type="button" class="btn btn-info" ><span class="icon icon-search"></span></button>
+						<button id="" type="button" class="btn btn-info btn-search" ><span class="icon icon-search"></span></button>
 					</a>
                     </div>
                   </div>

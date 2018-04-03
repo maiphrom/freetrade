@@ -38,7 +38,7 @@ label {
                     </div>
                     <div class="g24-col-sm-2" style="padding:0px;margin:0px;">
                       <a href="#" onclick="search_loan()">
-						<button style="padding: 6px 11px 4px;" id="" type="button" class="btn btn-info" ><span class="icon icon-search"></span></button>
+						<button id="" type="button" class="btn btn-info btn-search" ><span class="icon icon-search"></span></button>
 					</a>
                     </div>
                   </div>
