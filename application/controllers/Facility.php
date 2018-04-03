@@ -56,7 +56,7 @@ class Facility extends CI_Controller {
 			$facility_main_code = $row['facility_main_code'];
 			$this->db->select('*');
 			$this->db->from('coop_facility_store');
-			$this->db->where("facility_main_code = '".$facility_main_code."'");
+			$this->db->where("facility_main_code = '".$facility_main_code."' AND store_status = '0'");
 			$rs = $this->db->get()->result_array();
 			$arr_data['row'] = @$rs;
 			//exit;
@@ -368,7 +368,7 @@ class Facility extends CI_Controller {
 		$arr_data['form_target'] = $this->input->post('form_target');
 		//echo"<pre>";print_r($arr_data['data']);exit;
 		$this->load->view('facility/get_search_store',$arr_data);
-	}
+	}	
 
 	function del_coop_data(){	
 		$table = @$_POST['table'];
@@ -407,8 +407,57 @@ class Facility extends CI_Controller {
 		echo"<script> document.location.href='".PROJECTPATH."/facility' </script>";
 		exit;
 	}
+	
 	function take_facility(){
 		$arr_data = array();
+		$id = @$_GET['id'];
+		if($id!=''){
+			$this->db->select('*');
+			$this->db->from('coop_facility_take');
+			$this->db->where("facility_take_id = '".$id."'");
+			$rs = $this->db->get()->result_array();
+			$row= @$rs[0];
+			$arr_data['data'] = @$row;
+			
+			$this->db->select(array('coop_facility_take_detail.facility_take_id','coop_facility_store.*'));
+			$this->db->from('coop_facility_take_detail');
+			$this->db->join('coop_facility_store', 'coop_facility_store.store_id = coop_facility_take_detail.store_id', 'left');
+			$this->db->where("facility_take_id = '".$id."'");
+			$row = $this->db->get()->result_array();
+			$arr_data['detail'] = @$row;
+		
+		}else{
+			$arr_data['data'] = array();
+			
+			$this->db->select('COUNT(facility_take_id) as _c');
+			$this->db->from('coop_facility_take');
+			$count = $this->db->get()->result_array();
+
+			$num_rows = $count[0]["_c"] ;
+			$per_page = 10 ;
+			$page = isset($_GET["page"]) ? ((int) $_GET["page"]) : 1;
+			$paging = $this->pagination_center->paginating($page, $num_rows, $per_page, 20);//$page_now = 1, $row_total = 1, $per_page = 20, $page_limit = 20
+
+			$page_start = (($per_page * $page) - $per_page);
+			if($page_start==0){ $page_start = 1;}
+
+			$this->db->select('*');
+			$this->db->from('( SELECT coop_facility_take.*,coop_department.department_name, ROW_NUMBER() OVER (ORDER BY coop_facility_take.facility_take_id DESC) as row FROM coop_facility_take 
+							LEFT JOIN coop_department ON coop_facility_take.department_id = coop_department.department_id) a');
+			$this->db->where("row >= ".$page_start." AND row <= ".($page_start+$per_page-1));
+			//$this->db->limit($page_start, $per_page);
+			$this->db->order_by('facility_take_id DESC');
+			$row = $this->db->get()->result_array();
+			//print_r($this->db->last_query());exit;
+
+			$i = $page_start;
+
+
+			$arr_data['num_rows'] = $num_rows;
+			$arr_data['paging'] = $paging;
+			$arr_data['row'] = $row;
+			$arr_data['i'] = $i;
+		}		
 		
 		$this->db->select('*');
 		$this->db->from('coop_type_evidence');
@@ -445,13 +494,30 @@ class Facility extends CI_Controller {
 	function take_facility_save(){
 		//echo"<pre>";print_r($_POST);exit;
 		$data_insert = array();
-		$data_insert['receive_no'] = $_POST['receive_no'];
+		$budget_year = $_POST['budget_year'];
+		$id_edit = @$_POST["facility_take_id"] ;
+		
+		$this->db->select(array('MAX(receive_run) AS last_run'));
+		$this->db->from('coop_facility_take');
+		$this->db->where("budget_year = '{$budget_year}'");
+		$rs = $this->db->get()->result_array();
+		$row = @$rs[0]; 
+		
+		$run_now = 0;
+		if(empty($id_edit)){
+			$run_now = $row['last_run']+1;	
+			$receive_no = $budget_year.'-'.sprintf("%04d",$run_now);
+		}
+		
+		$data_insert['receive_no'] = $receive_no;
+		$data_insert['receive_run'] = $run_now;
 		$data_insert['receive_date'] = $this->center_function->ConvertToSQLDate($_POST['receive_date']);
 		$data_insert['budget_year'] = $_POST['budget_year'];
 		$data_insert['voucher_no'] = $_POST['voucher_no'];
 		$data_insert['type_evidence_id'] = $_POST['type_evidence_id'];
 		$data_insert['sign_date'] = $this->center_function->ConvertToSQLDate($_POST['sign_date']);
 		$data_insert['department_id'] = $_POST['department_id'];
+		$data_insert['receive_name'] = $_POST['receive_name'];
 		$this->db->insert('coop_facility_take', $data_insert);
 		
 		$facility_take_id = $this->db->insert_id();
@@ -469,5 +535,24 @@ class Facility extends CI_Controller {
 		}
 		$this->center_function->toast('บันทึกข้อมูลเรียบร้อยแล้ว');
 		echo "<script> document.location.href='".base_url(PROJECTPATH.'/facility/take_facility')."' </script>";
+	}
+	
+	function get_search_take(){
+		$where = "
+		 	(receive_no LIKE '%".$this->input->post('search_text')."%'
+		 	OR receive_name LIKE '%".$this->input->post('search_text')."%' 
+		 	OR department_name LIKE '%".$this->input->post('search_text')."%')
+		";
+		
+		$this->db->select(array('coop_facility_take.facility_take_id','coop_facility_take.receive_no','coop_facility_take.receive_date','coop_facility_take.receive_name','coop_department.department_name'));
+		$this->db->from('coop_facility_take');
+		$this->db->join('coop_department', 'coop_facility_take.department_id = coop_department.department_id', 'left');
+		$this->db->where($where);
+		$this->db->order_by('facility_take_id DESC');
+		$row = $this->db->get()->result_array();
+		$arr_data['data'] = @$row;
+		$arr_data['form_target'] = $this->input->post('form_target');
+		//echo"<pre>";print_r($arr_data['data']);exit;
+		$this->load->view('facility/get_search_take',$arr_data);
 	}
 }

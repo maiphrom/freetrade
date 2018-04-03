@@ -69,7 +69,9 @@
 									<?php } ?>
 								</select>
 							</div>
-							<div class="g24-col-sm-2"> <input type="submit" class="btn btn-primary" value="ค้นหา"> </div>
+							<div class="g24-col-sm-2"> 
+								<button class="btn btn-primary btn-after-input" type="submit"><span> ค้นหา</span></button>
+							</div>
 						</form>
 					</div>
 					<div class="form-group g24-col-sm-24" style="margin-top:20px;">

@@ -42,7 +42,7 @@
 				padding-top:7px;
 			}
 		</style>
-		<link rel="stylesheet" href="/html/css/custom-grid24.css">
+	
 		<style type="text/css">
 		  .form-group{
 			margin-bottom: 5px;

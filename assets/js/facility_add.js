@@ -68,6 +68,9 @@ $( document ).ready(function() {
 
         return false;
     });
+	
+	get_search_facility();
+	get_search_department();
 });
 
 function get_image() {

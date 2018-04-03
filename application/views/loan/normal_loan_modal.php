@@ -54,12 +54,12 @@
 				</div>
 				<div class="g24-col-sm-1">
 					<span class="btn_search_member">
-						<button style="padding: 6px 11px 4px;" type="button" class="btn btn-info guarantee_<?php echo $guarantee_type; ?>" disabled="true" onclick="search_member_modal('1')"><span class="icon icon-search"></span></button>
+						<button type="button" class="btn btn-info guarantee_<?php echo $guarantee_type; ?> btn-search" disabled="true" onclick="search_member_modal('1')"><span class="icon icon-search"></span></button>
 					</span>
 				</div>
 				<div class="g24-col-sm-1">
 					<span class="btn_delete_member" id="btn_delete_1" style="display:none">
-						<button style="padding: 6px 11px 4px;" type="button" class="btn btn-danger guarantee_<?php echo $guarantee_type; ?>" disabled="true" onclick="delete_guarantee_person('1')"><span class="icon icon-trash"></span></button>
+						<button type="button" class="btn btn-danger guarantee_<?php echo $guarantee_type; ?> btn-search" disabled="true" onclick="delete_guarantee_person('1')"><span class="icon icon-trash"></span></button>
 					</span>
 				</div>
 				<label class="g24-col-sm-2 control-label ">ชื่อ-สกุล </label>
@@ -92,12 +92,12 @@
 				</div>
 				<div class="g24-col-sm-1">
 					<span class="btn_search_member">
-						<button style="padding: 6px 11px 4px;" type="button" class="btn btn-info guarantee_<?php echo $guarantee_type; ?>" disabled="true" onclick="search_member_modal('2')"><span class="icon icon-search"></span></button>
+						<button type="button" class="btn btn-info guarantee_<?php echo $guarantee_type; ?> btn-search" disabled="true" onclick="search_member_modal('2')"><span class="icon icon-search"></span></button>
 					</span>
 				</div>
 				<div class="g24-col-sm-1">
 					<span class="btn_delete_member" id="btn_delete_2" style="display:none">
-						<button style="padding: 6px 11px 4px;" type="button" class="btn btn-danger guarantee_<?php echo $guarantee_type; ?>" disabled="true" onclick="delete_guarantee_person('2')"><span class="icon icon-trash"></span></button>
+						<button type="button" class="btn btn-danger guarantee_<?php echo $guarantee_type; ?> btn-search" disabled="true" onclick="delete_guarantee_person('2')"><span class="icon icon-trash"></span></button>
 					</span>
 				</div>
 				<label class="g24-col-sm-2 control-label ">ชื่อ-สกุล </label>
@@ -128,13 +128,13 @@
 					<input class="form-control guarantee_<?php echo $guarantee_type; ?> guarantee_person_id" guarantee_person_id='3' type="text" id="guarantee_person_id_3" name="data[coop_loan_guarantee][<?php echo $guarantee_type; ?>][coop_loan_guarantee_person][id][3]" value="" disabled="true" readonly>
 				</div>
 				<div class="g24-col-sm-1">
-					<span class="btn_search_member">
-						<button style="padding: 6px 11px 4px;" type="button" class="btn btn-info guarantee_<?php echo $guarantee_type; ?>" disabled="true" onclick="search_member_modal('3')"><span class="icon icon-search"></span></button>
+					<span class="btn_search_member"> 
+						<button type="button" class="btn btn-info guarantee_<?php echo $guarantee_type; ?> btn-search" disabled="true" onclick="search_member_modal('3')"><span class="icon icon-search"></span></button>
 					</span>
 				</div>
 				<div class="g24-col-sm-1">
 					<span class="btn_delete_member" id="btn_delete_3" style="display:none">
-						<button style="padding: 6px 11px 4px;" type="button" class="btn btn-danger guarantee_<?php echo $guarantee_type; ?>" disabled="true" onclick="delete_guarantee_person('3')"><span class="icon icon-trash"></span></button>
+						<button type="button" class="btn btn-danger guarantee_<?php echo $guarantee_type; ?> btn-search" disabled="true" onclick="delete_guarantee_person('3')"><span class="icon icon-trash"></span></button>
 					</span>
 				</div>
 				<label class="g24-col-sm-2 control-label ">ชื่อ-สกุล </label>
@@ -166,12 +166,12 @@
 				</div>
 				<div class="g24-col-sm-1">
 					<span class="btn_search_member">
-						<button style="padding: 6px 11px 4px;" type="button" class="btn btn-info guarantee_<?php echo $guarantee_type; ?>" disabled="true" onclick="search_member_modal('4')"><span class="icon icon-search"></span></button>
+						<button type="button" class="btn btn-info guarantee_<?php echo $guarantee_type; ?> btn-search" disabled="true" onclick="search_member_modal('4')"><span class="icon icon-search"></span></button>
 					</span>
 				</div>
 				<div class="g24-col-sm-1">
 					<span class="btn_delete_member" id="btn_delete_4" style="display:none">
-						<button style="padding: 6px 11px 4px;" type="button" class="btn btn-danger guarantee_<?php echo $guarantee_type; ?>" disabled="true" onclick="delete_guarantee_person('4')"><span class="icon icon-trash"></span></button>
+						<button type="button" class="btn btn-danger guarantee_<?php echo $guarantee_type; ?> btn-search" disabled="true" onclick="delete_guarantee_person('4')"><span class="icon icon-trash"></span></button>
 					</span>
 				</div>
 				<label class="g24-col-sm-2 control-label ">ชื่อ-สกุล </label>
@@ -231,7 +231,7 @@
 				</div>
 				<div class="g24-col-sm-3">
 					<a class="link-line-none" data-toggle="modal" data-target="#cal_period_normal_loan" id="cal_period_btn" class="fancybox_share fancybox.iframe" href="#">
-						<button class="btn btn-info">คำนวณ</button>
+						<button class="btn btn-info  btn-after-input"><span>คำนวณ</span></button>
 					</a>
 				</div>
 			</div>

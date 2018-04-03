@@ -76,7 +76,7 @@
 
                             <div class="g24-col-sm-1">
                                 <a data-toggle="modal" data-target="#myModal" id="test" class="fancybox_share fancybox.iframe" href="#">
-                                    <button style="padding: 6px 11px 4px;" id="" type="button" class="btn btn-info"><span class="icon icon-search"></span>
+                                    <button id="" type="button" class="btn btn-info btn-search"><span class="icon icon-search"></span>
                                     </button>
                                 </a>
                             </div>
@@ -124,7 +124,7 @@
 
                             <div class="g24-col-sm-1">
                                 <a data-toggle="modal" data-target="#myModalDepartment" id="test" class="fancybox_share fancybox.iframe" href="#">
-                                    <button style="padding: 6px 11px 4px;" id="" type="button" class="btn btn-info"><span class="icon icon-search"></span>
+                                    <button id="" type="button" class="btn btn-info btn-search"><span class="icon icon-search"></span>
                                     </button>
                                 </a>
                             </div>
@@ -315,6 +315,7 @@
 </div>
     </div>
 </div>
+
 <div class="modal fade" id="myModal" role="dialog">
     <div class="modal-dialog">
 
@@ -329,14 +330,16 @@
                     <input class="form-control input-thick pill m-b-2" type="text" placeholder="กรอกรหัสหรือชื่อพัสดุ" name="search_facility_text" id="search_facility_text" onkeyup="get_search_facility()">
                     <span class="icon icon-search input-icon"></span>
                 </div>
-                <div class="bs-example" data-example-id="striped-table">
-                    <table class="table table-striped">
+                <div class="bs-example scrollbar" data-example-id="striped-table">
+					<div class="force-overflow">
+						<table class="table table-striped">
 
-                        <tbody id="table_data_facility">
+							<tbody id="table_data_facility">
+								
+							</tbody>
 
-                        </tbody>
-
-                    </table>
+						</table>
+					</div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -360,14 +363,16 @@
                     <input class="form-control input-thick pill m-b-2" type="text" placeholder="กรอกหน่วยงาน" name="search_department_text" id="search_department_text" onkeyup="get_search_department()">
                     <span class="icon icon-search input-icon"></span>
                 </div>
-                <div class="bs-example" data-example-id="striped-table">
-                    <table class="table table-striped">
+                <div class="bs-example scrollbar" data-example-id="striped-table">
+					<div class="force-overflow">
+						<table class="table table-striped">
 
-                        <tbody id="table_data_department">
+							<tbody id="table_data_department">
 
-                        </tbody>
+							</tbody>
 
-                    </table>
+						</table>
+					</div>
                 </div>
             </div>
             <div class="modal-footer">

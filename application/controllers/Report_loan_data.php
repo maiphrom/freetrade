@@ -13,7 +13,7 @@ class Report_loan_data extends CI_Controller {
 		$this->db->from('coop_loan_type');
 		$this->db->order_by('order_by ASC');
 		$rs_loan_type = $this->db->get()->result_array();
-		//print_r($this->db->last_query()); exit;
+		
 		$loan_type = array();
 		if(!empty($rs_loan_type)){
 			foreach($rs_loan_type as $key => $row_loan_type){
@@ -31,18 +31,22 @@ class Report_loan_data extends CI_Controller {
 			$month = (int)@$date_arr[1];
 			$year = (int)@$date_arr[2];
 			$year -= 543;
-			$where = "AND t1.createdatetime LIKE '".@$year.'-'.sprintf("%02d",@$month)."-".sprintf("%02d",@$day)."%'";
+			$s_date = $year.'-'.sprintf("%02d",@$month).'-'.sprintf("%02d",@$day).' 00:00:00.000';
+			$e_date = $year.'-'.sprintf("%02d",@$month).'-'.sprintf("%02d",@$day).' 23:59:59.000';
+			$where = " AND t1.createdatetime BETWEEN '".$s_date."' AND '".$e_date."'";
 		}else{
 			if(@$_POST['month']!='' && @$_POST['year']!=''){
 				$day = '';
 				$month = $_POST['month'];
 				$year = ($_POST['year']-543);
-				$where = "AND t1.createdatetime LIKE '".@$year.'-'.sprintf("%02d",@$month)."%'";
+				$s_date = $year.'-'.sprintf("%02d",@$month).'-01'.' 00:00:00.000';
+				$e_date = date('Y-m-t',strtotime($s_date)).' 23:59:59.000';
+				$where = " AND t1.createdatetime BETWEEN '".$s_date."' AND '".$e_date."'";
 			}else{
 				$day = '';
 				$month = '';
 				$year = (@$_POST['year']-543);
-				$where = "AND t1.createdatetime LIKE '".@$year."%'";
+				$where = " AND t1.createdatetime BETWEEN '".$year."-01-01 00:00:00.000' AND '".$year."-12-31 23:59:59.000' ";
 			}
 		}
 		
@@ -55,7 +59,7 @@ class Report_loan_data extends CI_Controller {
 		$this->db->order_by('t1.createdatetime ASC');
 		$rs_check = $this->db->get()->result_array();
 		$row_check = @$rs_check[0];
-
+		//print_r($this->db->last_query());exit;
 		if(@$row_check['loan_id'] != ''){
 			echo "success";
 		}

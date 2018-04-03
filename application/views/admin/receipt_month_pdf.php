@@ -277,7 +277,7 @@ function U2T($text) { return @iconv("UTF-8", "TIS-620//IGNORE", ($text)); }
 							$date_count = $diff->format("%a");
 							$date_count = $date_count+1;
 							
-							$interest = (((@$row_normal_loan['loan_amount_balance']*@$row_normal_loan['interest_per_year'])/100)/365)*$date_count;
+							$interest = (((@$row_normal_loan['loan_amount_balance']*@$row_normal_loan['interest_per_year'])/100)/365)*@$date_count;
 							
 							$y_point += 7;
 							
@@ -313,17 +313,17 @@ function U2T($text) { return @iconv("UTF-8", "TIS-620//IGNORE", ($text)); }
 							$row_account_match = $this->db->get()->result_array();
 							$row_account_match = @$row_account_match[0];
 							
-							$data_account['coop_account_detail'][0]['account_type'] = 'debit';
-							$data_account['coop_account_detail'][0]['account_amount'] += ($principal_payment+$interest);
-							$data_account['coop_account_detail'][0]['account_chart_id'] = '10100';
+							@$data_account['coop_account_detail'][0]['account_type'] = 'debit';
+							@$data_account['coop_account_detail'][0]['account_amount'] += (@$principal_payment+@$interest);
+							@$data_account['coop_account_detail'][0]['account_chart_id'] = '10100';
 							$i++;
-							$data_account['coop_account_detail'][$i]['account_type'] = 'credit';
-							$data_account['coop_account_detail'][$i]['account_amount'] = $principal_payment;
-							$data_account['coop_account_detail'][$i]['account_chart_id'] = @$row_account_match['account_chart_id'];
+							@$data_account['coop_account_detail'][$i]['account_type'] = 'credit';
+							@$data_account['coop_account_detail'][$i]['account_amount'] = @$principal_payment;
+							@$data_account['coop_account_detail'][$i]['account_chart_id'] = @$row_account_match['account_chart_id'];
 							
-							$data_account['coop_account_detail'][40100]['account_type'] = 'credit';
-							$data_account['coop_account_detail'][40100]['account_amount'] += $interest;
-							$data_account['coop_account_detail'][40100]['account_chart_id'] = '40100';
+							@$data_account['coop_account_detail'][40100]['account_type'] = 'credit';
+							@$data_account['coop_account_detail'][40100]['account_amount'] += @$interest;
+							@$data_account['coop_account_detail'][40100]['account_chart_id'] = '40100';
 							
 							//รายละเอียดใบเสร็จ
 							$data_insert = array();

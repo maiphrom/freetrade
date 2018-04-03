@@ -31,21 +31,28 @@ class Report_share_data extends CI_Controller {
 			$month = (int)@$date_arr[1];
 			$year = (int)@$date_arr[2];
 			$year -= 543;
-			$where_check = " AND t1.create_date LIKE '".$year.'-'.sprintf("%02d",$month)."-".sprintf("%02d",$day)."%'";
-			$where_check2 = " AND t1.share_date LIKE '".$year.'-'.sprintf("%02d",$month)."-".sprintf("%02d",$day)."%'";
+			
+			$s_date = $year.'-'.sprintf("%02d",@$month).'-'.sprintf("%02d",@$day).' 00:00:00.000';
+			$e_date = $year.'-'.sprintf("%02d",@$month).'-'.sprintf("%02d",@$day).' 23:59:59.000';
+			$where_check = " AND t1.create_date BETWEEN '".$s_date."' AND '".$e_date."'";
+			$where_check2 = " AND t1.share_date BETWEEN '".$s_date."' AND '".$e_date."'";
 		}else{
 			if(@$_POST['month']!='' && @$_POST['year']!=''){
 				$day = '';
 				$month = @$_POST['month'];
 				$year = (@$_POST['year']-543);
-				$where_check = " AND t1.create_date LIKE '".$year.'-'.sprintf("%02d",$month)."%'";
-				$where_check2 = " AND t1.share_date LIKE '".$year.'-'.sprintf("%02d",$month)."%'";
+				
+				$s_date = $year.'-'.sprintf("%02d",@$month).'-01'.' 00:00:00.000';
+				$e_date = date('Y-m-t',strtotime($s_date)).' 23:59:59.000';
+				$where_check = " AND t1.create_date BETWEEN '".$s_date."' AND '".$e_date."'";
+				$where_check2 = " AND t1.share_date BETWEEN '".$s_date."' AND '".$e_date."'";
 			}else{
 				$day = '';
 				$month = '';
 				$year = ($_POST['year']-543);
-				$where_check = " AND t1.create_date LIKE '".$year."%'";
-				$where_check2 = " AND t1.share_date LIKE '".$year."%'";
+				
+				$where_check = " AND t1.create_date BETWEEN '".$year."-01-01 00:00:00.000' AND '".$year."-12-31 23:59:59.000' ";
+				$where_check2 = " AND t1.share_date BETWEEN '".$year."-01-01 00:00:00.000' AND '".$year."-12-31 23:59:59.000' ";
 			}
 		}
 		

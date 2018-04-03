@@ -53,15 +53,15 @@
 							</div>
 							<div class="g24-col-sm-1">
 								<a data-toggle="modal" data-target="#search_account_buy" id="test" class="" href="#" onclick="search_buy('')">
-									<button style="padding: 6px 11px 4px;" id="" type="button" class="btn btn-info">
+									<button id="" type="button" class="btn btn-info btn-search">
 										<span class="icon icon-search"></span>
 									</button>
 								</a>
 							</div>
 							<?php if(@$_GET['account_buy_id']!=''){ ?>
-							<div class="g24-col-sm-1">
+							<div class="g24-col-sm-16 text-right">
 								<a class="" href="<?php echo base_url(PROJECTPATH.'/coop_buy')?>">
-									<button style="padding: 6px 11px 4px;" id="" type="button" class="btn btn-info">
+									<button id="" type="button" class="btn btn-info">
 										<span class="icon icon-plus-circle"></span> เพิ่มรายการใหม่
 									</button>
 								</a>

@@ -10,28 +10,25 @@ class Account extends CI_Controller {
 	{
 		$arr_data = array();
 		
-		$this->db->select('*');
-		$this->db->from('coop_account');
-		$this->db->where("account_status != '2'");
-		$row = $this->db->get()->result_array();
 		
-		$num_rows = count($row);
-		$per_page = 5;
-		$page = isset($_GET["page"]) ? ((int) $_GET["page"]) : 1;
-		$paging = $this->pagination_center->paginating($page, $num_rows, $per_page, 20);//$page_now = 1, $row_total = 1, $per_page = 20, $page_limit = 20
-
-		$page_start = (($per_page * $page) - $per_page);
-		if($page_start==0){ $page_start = 1;}
-
-		$this->db->select('*');
-		$this->db->from("( SELECT *,ROW_NUMBER() OVER (ORDER BY account_id DESC) as row FROM coop_account WHERE account_status != '2') as a");
-		$this->db->where("row >= ".$page_start." AND row <= ".($page_start+$per_page-1));
-		$this->db->order_by('account_id DESC');
-		$row = $this->db->get()->result_array();
-
-		$i = $page_start;
+		$x=0;
+		$join_arr = array();
 		
-		foreach($row as $key => $value){
+		$this->paginater_all->type(DB_TYPE);
+		$this->paginater_all->select('*');
+		$this->paginater_all->main_table('coop_account');
+		$this->paginater_all->where("account_status != '2'");
+		$this->paginater_all->page_now(@$_GET["page"]);
+		$this->paginater_all->per_page(5);
+		$this->paginater_all->page_link_limit(20);
+		$this->paginater_all->order_by('account_id DESC');
+		$this->paginater_all->join_arr($join_arr);
+		$row = $this->paginater_all->paginater_process();
+		
+		$paging = $this->pagination_center->paginating($row['page'], $row['num_rows'], $row['per_page'], $row['page_link_limit']);//$page_now = 1, $row_total = 1, $per_page = 20, $page_limit = 20
+		
+		
+		foreach($row['data'] as $key => $value){
 			
 			$this->db->select(array('t1.*','t2.account_chart'));
 			$this->db->from('coop_account_detail as t1');
@@ -40,12 +37,14 @@ class Account extends CI_Controller {
 			$this->db->order_by("account_detail_id ASC");
 			$row_detail = $this->db->get()->result_array();
 			
-			$row[$key]['account_detail'] = $row_detail;
+			$row['data'][$key]['account_detail'] = $row_detail;
 		}
 
-		$arr_data['num_rows'] = $num_rows;
+		$i = $row['page_start'];
+
+		$arr_data['num_rows'] = $row['num_rows'];
 		$arr_data['paging'] = $paging;
-		$arr_data['data'] = $row;
+		$arr_data['data'] = $row['data'];
 		$arr_data['i'] = $i;
 		
 		$arr_data['space'] = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"; 
@@ -103,25 +102,30 @@ class Account extends CI_Controller {
 		$this->libraries->template('account/account_day_book',$arr_data);
 	}
 	
-	function ajax_check_day_book(){
-		if($_POST['report_date'] != ''){
+	function ajax_check_day_book(){		
+		if(@$_POST['report_date'] != ''){
 			$date_arr = explode('/',$_POST['report_date']);
-			$day = (int)$date_arr[0];
-			$month = (int)$date_arr[1];
-			$year = (int)$date_arr[2];
+			$day = (int)@$date_arr[0];
+			$month = (int)@$date_arr[1];
+			$year = (int)@$date_arr[2];
 			$year -= 543;
-			$where = " AND account_datetime LIKE '".$year."-".sprintf("%02d",$month)."-".sprintf("%02d",$day)."%'";
+		
+			$s_date = $year.'-'.sprintf("%02d",@$month).'-'.sprintf("%02d",@$day).' 00:00:00.000';
+			$e_date = $year.'-'.sprintf("%02d",@$month).'-'.sprintf("%02d",@$day).' 23:59:59.000';
+			$where = " AND account_datetime BETWEEN '".$s_date."' AND '".$e_date."'";
 		}else{
-			if($_POST['month']!='' && $_POST['year']!=''){
+			if(@$_POST['month']!='' && @$_POST['year']!=''){
 				$day = '';
-				$month = $_POST['month'];
-				$year = ($_POST['year']-543);
-				$where = "AND account_datetime LIKE '".$year.'-'.sprintf("%02d",$month)."%'";
+				$month = @$_POST['month'];
+				$year = (@$_POST['year']-543);
+				$s_date = $year.'-'.sprintf("%02d",@$month).'-01'.' 00:00:00.000';
+				$e_date = date('Y-m-t',strtotime($s_date)).' 23:59:59.000';
+				$where = " AND account_datetime BETWEEN '".$s_date."' AND '".$e_date."'";
 			}else{
 				$day = '';
 				$month = '';
-				$year = ($_POST['year']-543);
-				$where = "AND account_datetime LIKE '".$year."%'";
+				$year = (@$_POST['year']-543);
+				$where = " AND account_datetime BETWEEN '".$year."-01-01 00:00:00.000' AND '".$year."-12-31 23:59:59.000' ";
 			}
 		}
 		$this->db->select(array('*'));
@@ -130,6 +134,7 @@ class Account extends CI_Controller {
 		$this->db->order_by("account_datetime ASC");
 		$this->db->limit(1);
 		$row = $this->db->get()->result_array();
+		//print_r($this->db->last_query());exit;
 		if(@$row[0]['account_id'] != ''){
 			echo "success";
 		}
@@ -145,20 +150,23 @@ class Account extends CI_Controller {
 			$month = (int)@$date_arr[1];
 			$year = (int)@$date_arr[2];
 			$year -= 543;
-			$where = " AND account_datetime LIKE '".$year."-".sprintf("%02d",$month)."-".sprintf("%02d",$day)."%'";
+			$s_date = $year.'-'.sprintf("%02d",@$month).'-'.sprintf("%02d",@$day).' 00:00:00.000';
+			$e_date = $year.'-'.sprintf("%02d",@$month).'-'.sprintf("%02d",@$day).' 23:59:59.000';
+			$where = " AND account_datetime BETWEEN '".$s_date."' AND '".$e_date."'";
 		}else{
 			if(@$_GET['month']!='' && @$_GET['year']!=''){
 				$day = '';
 				$month = @$_GET['month'];
 				$year = (@$_GET['year']-543);
-				$where = " AND account_datetime BETWEEN 
-				'".$year."-".sprintf("%02d",$month)."-01' 
-				AND '".date('Y-m-t',strtotime($year."-".sprintf("%02d",$month)."-01"))."'";
+				
+				$s_date = $year.'-'.sprintf("%02d",@$month).'-01'.' 00:00:00.000';
+				$e_date = date('Y-m-t',strtotime($s_date)).' 23:59:59.000';
+				$where = " AND account_datetime BETWEEN '".$s_date."' AND '".$e_date."'";
 			}else{
 				$day = '';
 				$month = '';
 				$year = (@$_GET['year']-543);
-				$where = " AND account_datetime BETWEEN '".$year."-01-01' AND '".$year."-12-31' ";
+				$where = " AND account_datetime BETWEEN '".$year."-01-01 00:00:00.000' AND '".$year."-12-31 23:59:59.000' ";
 			}
 		}
 		$arr_data['day'] = $day;
@@ -207,18 +215,22 @@ class Account extends CI_Controller {
 			$month = (int)$date_arr[1];
 			$year = (int)$date_arr[2];
 			$year -= 543;
-			$where = " AND account_datetime LIKE '".$year."-".sprintf("%02d",$month)."-".sprintf("%02d",$day)."%'";
+			$s_date = $year.'-'.sprintf("%02d",@$month).'-'.sprintf("%02d",@$day).' 00:00:00.000';
+			$e_date = $year.'-'.sprintf("%02d",@$month).'-'.sprintf("%02d",@$day).' 23:59:59.000';
+			$where = " AND t1.account_datetime BETWEEN '".$s_date."' AND '".$e_date."'";
 		}else{
 			if($_POST['month']!='' && $_POST['year']!=''){
 				$day = '';
 				$month = $_POST['month'];
 				$year = ($_POST['year']-543);
-				$where = "AND account_datetime LIKE '".$year.'-'.sprintf("%02d",$month)."%'";
+				$s_date = $year.'-'.sprintf("%02d",@$month).'-01'.' 00:00:00.000';
+				$e_date = date('Y-m-t',strtotime($s_date)).' 23:59:59.000';
+				$where = " AND t1.account_datetime BETWEEN '".$s_date."' AND '".$e_date."'";
 			}else{
 				$day = '';
 				$month = '';
 				$year = ($_POST['year']-543);
-				$where = "AND account_datetime LIKE '".$year."%'";
+				$where = " AND t1.account_datetime BETWEEN '".$year."-01-01 00:00:00.000' AND '".$year."-12-31 23:59:59.000' ";
 			}
 		}
 		$this->db->select(array(
@@ -253,20 +265,26 @@ class Account extends CI_Controller {
 			$year = (int)$date_arr[2];
 			$year -= 543;
 			$file_name_text = $day."_".$month_arr[$month]."_".($year+543);
-			$where_date = " AND t1.account_datetime LIKE '".$year."-".sprintf('%02d',$month)."-".sprintf('%02d',$day)."%' ";
+			
+			$s_date = $year.'-'.sprintf("%02d",@$month).'-'.sprintf("%02d",@$day).' 00:00:00.000';
+			$e_date = $year.'-'.sprintf("%02d",@$month).'-'.sprintf("%02d",@$day).' 23:59:59.000';
+			$where_date = " AND t1.account_datetime BETWEEN '".$s_date."' AND '".$e_date."'";
 		}else{
 			if(@$_GET['month']!='' && @$_GET['year']!=''){
 				$day = '';
 				$month = @$_GET['month'];
 				$year = (@$_GET['year']-543);
-				$file_name_text = $month_arr[$month]."_".($year+543);
-				$where_date = " AND t1.account_datetime LIKE '".$year."-".sprintf('%02d',$month)."%' ";
+				$file_name_text = $month_arr[$month]."_".($year+543);			
+				
+				$s_date = $year.'-'.sprintf("%02d",@$month).'-01'.' 00:00:00.000';
+				$e_date = date('Y-m-t',strtotime($s_date)).' 23:59:59.000';
+				$where_date = " AND t1.account_datetime BETWEEN '".$s_date."' AND '".$e_date."'";
 			}else{
 				$day = '';
 				$month = '';
 				$year = (@$_GET['year']-543);
 				$file_name_text = ($year+543);
-				$where_date = " AND t1.account_datetime LIKE '".$year."%' ";
+				$where_date = " AND t1.account_datetime BETWEEN '".$year."-01-01 00:00:00.000' AND '".$year."-12-31 23:59:59.000' ";
 			}
 		}
 		$arr_data['day'] = $day;
@@ -381,20 +399,23 @@ class Account extends CI_Controller {
 			$month = (int)@$date_arr[1];
 			$year = (int)@$date_arr[2];
 			$year -= 543;
-			$where = " AND t1.account_datetime LIKE '".$year."-".sprintf("%02d",$month)."-".sprintf("%02d",$day)."%'";
+			$s_date = $year.'-'.sprintf("%02d",@$month).'-'.sprintf("%02d",@$day).' 00:00:00.000';
+			$e_date = $year.'-'.sprintf("%02d",@$month).'-'.sprintf("%02d",@$day).' 23:59:59.000';
+			$where = " AND t1.account_datetime BETWEEN '".$s_date."' AND '".$e_date."'";
 		}else{
 			if(@$_POST['month']!='' && @$_POST['year']!=''){
 				$day = '';
 				$month = @$_POST['month'];
 				$year = (@$_POST['year']-543);
-				$where = " AND t1.account_datetime BETWEEN 
-				'".$year."-".sprintf("%02d",$month)."-01' 
-				AND '".date('Y-m-t',strtotime($year."-".sprintf("%02d",$month)."-01"))."'";
+				
+				$s_date = $year.'-'.sprintf("%02d",@$month).'-01'.' 00:00:00.000';
+				$e_date = date('Y-m-t',strtotime($s_date)).' 23:59:59.000';
+				$where = " AND t1.account_datetime BETWEEN '".$s_date."' AND '".$e_date."'";
 			}else{
 				$day = '';
 				$month = '';
 				$year = (@$_POST['year']-543);
-				$where = " AND t1.account_datetime BETWEEN '".$year."-01-01' AND '".$year."-12-31' ";
+				$where = " AND t1.account_datetime BETWEEN '".$year."-01-01 00:00:00.000' AND '".$year."-12-31 23:59:59.000' ";
 			}
 		}
 
@@ -430,22 +451,24 @@ class Account extends CI_Controller {
 			$year = (int)$date_arr[2];
 			$year -= 543;
 			$textTitle = "วันที่ ".$day." ".$month_arr[$month]." ".($year+543);
-			$where = " AND t1.account_datetime LIKE '".$year."-".sprintf("%02d",$month)."-".sprintf("%02d",$day)."%'";
+			$s_date = $year.'-'.sprintf("%02d",@$month).'-'.sprintf("%02d",@$day).' 00:00:00.000';
+			$e_date = $year.'-'.sprintf("%02d",@$month).'-'.sprintf("%02d",@$day).' 23:59:59.000';
+			$where = " AND t1.account_datetime BETWEEN '".$s_date."' AND '".$e_date."'";
 		}else{
 			if(@$_GET['month']!='' && @$_GET['year']!=''){
 				$day = '';
 				$month = @$_GET['month'];
 				$year = (@$_GET['year']-543);
 				$textTitle = "เดือน ".$month_arr[$month]." ".($year+543);
-				$where = " AND t1.account_datetime BETWEEN 
-				'".$year."-".sprintf("%02d",$month)."-01' 
-				AND '".date('Y-m-t',strtotime($year."-".sprintf("%02d",$month)."-01"))."'";
+				$s_date = $year.'-'.sprintf("%02d",@$month).'-01'.' 00:00:00.000';
+				$e_date = date('Y-m-t',strtotime($s_date)).' 23:59:59.000';
+				$where = " AND t1.account_datetime BETWEEN '".$s_date."' AND '".$e_date."'";
 			}else{
 				$day = '';
 				$month = '';
 				$year = (@$_GET['year']-543);
 				$textTitle = "ปี ".($year+543);
-				$where = " AND t1.account_datetime BETWEEN '".$year."-01-01' AND '".$year."-12-31' ";
+				$where = " AND t1.account_datetime BETWEEN '".$year."-01-01 00:00:00.000' AND '".$year."-12-31 23:59:59.000' ";
 			}
 		}
 
@@ -485,18 +508,22 @@ class Account extends CI_Controller {
 			$month = (int)@$date_arr[1];
 			$year = (int)@$date_arr[2];
 			$year -= 543;
-			$where = " AND t1.account_datetime LIKE '".$year."-".sprintf('%02d',$month)."-".sprintf('%02d',$day)."%' ";
+			$s_date = $year.'-'.sprintf("%02d",@$month).'-'.sprintf("%02d",@$day).' 00:00:00.000';
+			$e_date = $year.'-'.sprintf("%02d",@$month).'-'.sprintf("%02d",@$day).' 23:59:59.000';
+			$where = " AND t1.account_datetime BETWEEN '".$s_date."' AND '".$e_date."'";
 		}else{
 			if(@$_POST['month']!='' && @$_POST['year']!=''){
 				$day = '';
 				$month = @$_POST['month'];
 				$year = (@$_POST['year']-543);
-				$where = " AND t1.account_datetime LIKE '".$year."-".sprintf('%02d',$month)."%' ";
+				$s_date = $year.'-'.sprintf("%02d",@$month).'-01'.' 00:00:00.000';
+				$e_date = date('Y-m-t',strtotime($s_date)).' 23:59:59.000';
+				$where = " AND t1.account_datetime BETWEEN '".$s_date."' AND '".$e_date."'";
 			}else{
 				$day = '';
 				$month = '';
 				$year = (@$_POST['year']-543);
-				$where = " AND t1.account_datetime LIKE '".$year."%' ";
+				$where = " AND t1.account_datetime BETWEEN '".$year."-01-01 00:00:00.000' AND '".$year."-12-31 23:59:59.000' ";
 			}
 		}
 
@@ -528,20 +555,22 @@ class Account extends CI_Controller {
 			$month = (int)@$date_arr[1];
 			$year = (int)@$date_arr[2];
 			$year -= 543;
-			$where = " AND account_datetime LIKE '".$year."-".sprintf("%02d",$month)."-".sprintf("%02d",$day)."%'";
+			$s_date = $year.'-'.sprintf("%02d",@$month).'-'.sprintf("%02d",@$day).' 00:00:00.000';
+			$e_date = $year.'-'.sprintf("%02d",@$month).'-'.sprintf("%02d",@$day).' 23:59:59.000';
+			$where = " AND t1.account_datetime BETWEEN '".$s_date."' AND '".$e_date."'";
 		}else{
 			if(@$_GET['month']!='' && @$_GET['year']!=''){
 				$day = '';
 				$month = @$_GET['month'];
 				$year = (@$_GET['year']-543);
-				$where = " AND account_datetime BETWEEN 
-				'".$year."-".sprintf("%02d",$month)."-01' 
-				AND '".date('Y-m-t',strtotime($year."-".sprintf("%02d",$month)."-01"))."'";
+				$s_date = $year.'-'.sprintf("%02d",@$month).'-01'.' 00:00:00.000';
+				$e_date = date('Y-m-t',strtotime($s_date)).' 23:59:59.000';
+				$where = " AND t1.account_datetime BETWEEN '".$s_date."' AND '".$e_date."'";
 			}else{
 				$day = '';
 				$month = '';
 				$year = (@$_GET['year']-543);
-				$where = " AND account_datetime BETWEEN '".$year."-01-01' AND '".$year."-12-31' ";
+				$where = " AND t1.account_datetime BETWEEN '".$year."-01-01 00:00:00.000' AND '".$year."-12-31 23:59:59.000' ";
 			}
 		}
 		$arr_data['day'] = $day;
@@ -566,18 +595,23 @@ class Account extends CI_Controller {
 			$month = (int)@$date_arr[1];
 			$year = (int)@$date_arr[2];
 			$year -= 543;
-			$where = " AND t1.account_datetime LIKE '".$year."-".sprintf('%02d',$month)."-".sprintf('%02d',$day)."%' ";
+			$s_date = $year.'-'.sprintf("%02d",@$month).'-'.sprintf("%02d",@$day).' 00:00:00.000';
+			$e_date = $year.'-'.sprintf("%02d",@$month).'-'.sprintf("%02d",@$day).' 23:59:59.000';
+			$where = " AND t1.account_datetime BETWEEN '".$s_date."' AND '".$e_date."'";
 		}else{
 			if(@$_POST['month']!='' && @$_POST['year']!=''){
 				$day = '';
 				$month = @$_POST['month'];
 				$year = (@$_POST['year']-543);
-				$where = " AND t1.account_datetime LIKE '".$year."-".sprintf('%02d',$month)."%' ";
+				$s_date = $year.'-'.sprintf("%02d",@$month).'-01'.' 00:00:00.000';
+				$e_date = date('Y-m-t',strtotime($s_date)).' 23:59:59.000';
+				$where = " AND t1.account_datetime BETWEEN '".$s_date."' AND '".$e_date."'";
+
 			}else{
 				$day = '';
 				$month = '';
 				$year = (@$_POST['year']-543);
-				$where = " AND t1.account_datetime LIKE '".$year."%' ";
+				$where = " AND t1.account_datetime BETWEEN '".$year."-01-01 00:00:00.000' AND '".$year."-12-31 23:59:59.000' ";
 			}
 		}
 
@@ -609,20 +643,23 @@ class Account extends CI_Controller {
 				$month = (int)@$date_arr[1];
 				$year = (int)@$date_arr[2];
 				$year -= 543;
-				$where = " AND account_datetime LIKE '".$year."-".sprintf("%02d",$month)."-".sprintf("%02d",$day)."%'";
+				$s_date = $year.'-'.sprintf("%02d",@$month).'-'.sprintf("%02d",@$day).' 00:00:00.000';
+				$e_date = $year.'-'.sprintf("%02d",@$month).'-'.sprintf("%02d",@$day).' 23:59:59.000';
+				$where = " AND t1.account_datetime BETWEEN '".$s_date."' AND '".$e_date."'";
 			}else{
 				if(@$_GET['month']!='' && @$_GET['year']!=''){
 					$day = '';
 					$month = @$_GET['month'];
 					$year = (@$_GET['year']-543);
-					$where = " AND account_datetime BETWEEN 
-					'".$year."-".sprintf("%02d",$month)."-01' 
-					AND '".date('Y-m-t',strtotime($year."-".sprintf("%02d",$month)."-01"))."'";
+					$s_date = $year.'-'.sprintf("%02d",@$month).'-01'.' 00:00:00.000';
+					$e_date = date('Y-m-t',strtotime($s_date)).' 23:59:59.000';
+					$where = " AND t1.account_datetime BETWEEN '".$s_date."' AND '".$e_date."'";
+
 				}else{
 					$day = '';
 					$month = '';
 					$year = (@$_GET['year']-543);
-					$where = " AND account_datetime BETWEEN '".$year."-01-01' AND '".$year."-12-31' ";
+					$where = " AND t1.account_datetime BETWEEN '".$year."-01-01 00:00:00.000' AND '".$year."-12-31 23:59:59.000' ";
 				}
 			}
 		$arr_data['day'] = $day;
