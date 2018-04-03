@@ -305,6 +305,7 @@ switch (ENVIRONMENT)
 
 	define('VIEWPATH', $view_folder.DIRECTORY_SEPARATOR);
 	define('PROJECTPATH', '/ci_project');
+	define('DB_TYPE', 'sql_server');
 date_default_timezone_set('Asia/Bangkok');
 /*
  * --------------------------------------------------------------------

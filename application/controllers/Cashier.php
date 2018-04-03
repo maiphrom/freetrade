@@ -256,30 +256,27 @@ class Cashier extends CI_Controller {
 		$row_share_value = $row[0];
 		$share_value = $row_share_value['setting_value'];
 		
-		$this->db->select('*');
-		$this->db->from('coop_mem_apply');
-		$this->db->where("member_status = '1'");
-		$row = $this->db->get()->result_array();
+		$x=0;
+		$join_arr = array();
+		
+		$this->paginater_all->type(DB_TYPE);
+		$this->paginater_all->select('*');
+		$this->paginater_all->main_table('coop_mem_apply');
+		$this->paginater_all->where("member_status = '1'");
+		$this->paginater_all->page_now(@$_GET["page"]);
+		$this->paginater_all->per_page(10);
+		$this->paginater_all->page_link_limit(20);
+		$this->paginater_all->order_by('member_id ASC');
+		$this->paginater_all->join_arr($join_arr);
+		$row = $this->paginater_all->paginater_process();
+		//echo"<pre>";print_r($row);exit;
+		$paging = $this->pagination_center->paginating($row['page'], $row['num_rows'], $row['per_page'], $row['page_link_limit']);//$page_now = 1, $row_total = 1, $per_page = 20, $page_limit = 20
+		$i = $row['page_start'];
 
-		$num_rows = count($row);
-		$per_page = 20 ;
-		$page = isset($_GET["page"]) ? ((int) $_GET["page"]) : 1;
-		$paging = $this->pagination_center->paginating($page, $num_rows, $per_page, 20);//$page_now = 1, $row_total = 1, $per_page = 20, $page_limit = 20
 
-		$page_start = (($per_page * $page) - $per_page);
-		if($page_start==0){ $page_start = 1;}
-
-		$this->db->select('*');
-		$this->db->from("( SELECT *,ROW_NUMBER() OVER (ORDER BY member_id ASC) as row FROM coop_mem_apply WHERE member_status = '1') as a");
-		$this->db->where("row >= ".$page_start." AND row <= ".($page_start+$per_page-1));
-		$this->db->order_by('member_id ASC');
-		$row = $this->db->get()->result_array();
-
-		$i = $page_start;
-
-		$arr_data['num_rows'] = $num_rows;
+		$arr_data['num_rows'] = $row['num_rows'];
 		$arr_data['paging'] = $paging;
-		$arr_data['data'] = $row;
+		$arr_data['data'] = $row['data'];
 		$arr_data['i'] = $i;
 		foreach($arr_data['data'] as $key => $value){
 			$arr_data['data'][$key]['emergent_loan'] = 0;

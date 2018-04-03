@@ -132,4 +132,4 @@ $autoload['language'] = array();
 |
 |	$autoload['model'] = array('first_model' => 'first');
 */
-$autoload['model'] = array('Template_libraries'=>'libraries','Account_transaction'=>'account_transaction');
+$autoload['model'] = array('Template_libraries'=>'libraries','Account_transaction'=>'account_transaction','Paginater_all'=>'paginater_all');

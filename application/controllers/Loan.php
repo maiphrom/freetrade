@@ -162,33 +162,34 @@ class Loan extends CI_Controller {
 		}
 		$arr_data = array();
 		
-		$this->db->select('COUNT(id) as _c');
-		$this->db->from('coop_loan');
-		$this->db->where("loan_status IN('2','3')");
-		$count = $this->db->get()->result_array();
+		$x=0;
+		$join_arr = array();
+		$join_arr[$x]['table'] = 'coop_mem_apply';
+		$join_arr[$x]['condition'] = 'coop_mem_apply.member_id = coop_loan.member_id';
+		$join_arr[$x]['type'] = 'left';
+		$x++;
+		$join_arr[$x]['table'] = 'coop_user';
+		$join_arr[$x]['condition'] = 'coop_loan.admin_id = coop_user.user_id';
+		$join_arr[$x]['type'] = 'left';
+		
+		$this->paginater_all->type(DB_TYPE);
+		$this->paginater_all->select('*');
+		$this->paginater_all->main_table('coop_loan');
+		$this->paginater_all->where("loan_status IN('2','3')");
+		$this->paginater_all->page_now(@$_GET["page"]);
+		$this->paginater_all->per_page(10);
+		$this->paginater_all->page_link_limit(20);
+		$this->paginater_all->order_by('cancel_date DESC');
+		$this->paginater_all->join_arr($join_arr);
+		$row = $this->paginater_all->paginater_process();
+		//echo"<pre>";print_r($row);exit;
+		$paging = $this->pagination_center->paginating($row['page'], $row['num_rows'], $row['per_page'], $row['page_link_limit']);//$page_now = 1, $row_total = 1, $per_page = 20, $page_limit = 20
+		$i = $row['page_start'];
 
-		$num_rows = $count[0]["_c"] ;
-		$per_page = 10 ;
-		$page = isset($_GET["page"]) ? ((int) $_GET["page"]) : 1;
-		$paging = $this->pagination_center->paginating($page, $num_rows, $per_page, 20);//$page_now = 1, $row_total = 1, $per_page = 20, $page_limit = 20
 
-		$page_start = (($per_page * $page) - $per_page);
-		if($page_start==0){ $page_start = 1;}
-
-		$this->db->select('*');
-		$this->db->from("( SELECT *, ROW_NUMBER() OVER (ORDER BY cancel_date DESC) as row FROM coop_loan WHERE loan_status IN('2','3')) a");
-		$this->db->where("row >= ".$page_start." AND row <= ".($page_start+$per_page-1));
-		//$this->db->limit($page_start, $per_page);
-		$this->db->order_by('cancel_date DESC');
-		$row = $this->db->get()->result_array();
-		//print_r($this->db->last_query());exit;
-
-		$i = $page_start;
-
-
-		$arr_data['num_rows'] = $num_rows;
+		$arr_data['num_rows'] = $row['num_rows'];
 		$arr_data['paging'] = $paging;
-		$arr_data['data'] = $row;
+		$arr_data['data'] = $row['data'];
 		$arr_data['i'] = $i;
 		
 		$loan_type = array();
@@ -213,39 +214,35 @@ class Loan extends CI_Controller {
 			echo "<script> document.location.href='".base_url(PROJECTPATH.'/loan/loan_approve')."' </script>";
 		}
 		$arr_data = array();
+
+		$x=0;
+		$join_arr = array();
+		$join_arr[$x]['table'] = 'coop_mem_apply';
+		$join_arr[$x]['condition'] = 'coop_mem_apply.member_id = coop_loan.member_id';
+		$join_arr[$x]['type'] = 'left';
+		$x++;
+		$join_arr[$x]['table'] = 'coop_user';
+		$join_arr[$x]['condition'] = 'coop_loan.admin_id = coop_user.user_id';
+		$join_arr[$x]['type'] = 'left';
 		
-		$this->db->select('COUNT(id) as _c');
-		$this->db->from('coop_loan');
-		$this->db->where("loan_status IN('0','1')");
-		$count = $this->db->get()->result_array();
-
-		$num_rows = $count[0]["_c"] ;
-		$per_page = 10 ;
-		$page = isset($_GET["page"]) ? ((int) $_GET["page"]) : 1;
-		$paging = $this->pagination_center->paginating($page, $num_rows, $per_page, 20);//$page_now = 1, $row_total = 1, $per_page = 20, $page_limit = 20
-
-		$page_start = (($per_page * $page) - $per_page);
-		if($page_start==0){ $page_start = 1;}
-
-		$this->db->select('*');
-		$this->db->from("( SELECT t1.*, t2.firstname_th, t2.lastname_th, t3.user_name, ROW_NUMBER() OVER (ORDER BY createdatetime DESC) as row 
-		FROM 
-			coop_loan as t1
-			LEFT JOIN coop_mem_apply as t2 ON t1.member_id = t2.member_id
-			LEFT JOIN coop_user as t3 ON t1.admin_id = t3.user_id
-		WHERE loan_status IN('0','1')) a");
-		$this->db->where("row >= ".$page_start." AND row <= ".($page_start+$per_page-1));
-		//$this->db->limit($page_start, $per_page);
-		$this->db->order_by('createdatetime DESC');
-		$row = $this->db->get()->result_array();
-		//print_r($this->db->last_query());exit;
-
-		$i = $page_start;
+		$this->paginater_all->type(DB_TYPE);
+		$this->paginater_all->select('coop_loan.*, coop_mem_apply.firstname_th, coop_mem_apply.lastname_th, coop_user.user_name');
+		$this->paginater_all->main_table('coop_loan');
+		$this->paginater_all->where("loan_status IN('0','1')");
+		$this->paginater_all->page_now(@$_GET["page"]);
+		$this->paginater_all->per_page(10);
+		$this->paginater_all->page_link_limit(20);
+		$this->paginater_all->order_by('createdatetime DESC');
+		$this->paginater_all->join_arr($join_arr);
+		$row = $this->paginater_all->paginater_process();
+		//echo"<pre>";print_r($row);exit;
+		$paging = $this->pagination_center->paginating($row['page'], $row['num_rows'], $row['per_page'], $row['page_link_limit']);//$page_now = 1, $row_total = 1, $per_page = 20, $page_limit = 20
+		$i = $row['page_start'];
 
 
-		$arr_data['num_rows'] = $num_rows;
+		$arr_data['num_rows'] = $row['num_rows'];
 		$arr_data['paging'] = $paging;
-		$arr_data['data'] = $row;
+		$arr_data['data'] = $row['data'];
 		$arr_data['i'] = $i;
 		
 		$loan_type = array();
@@ -407,52 +404,48 @@ class Loan extends CI_Controller {
 		}
 		$arr_data = array();
 
-		$this->db->select('COUNT(id) as _c');
-		$this->db->from('coop_loan_transfer');
-		$this->db->where("transfer_status IN('1','2')");
-		$count = $this->db->get()->result_array();
-
-		$num_rows = $count[0]["_c"] ;
-		$per_page = 10 ;
-		$page = isset($_GET["page"]) ? ((int) $_GET["page"]) : 1;
-		$paging = $this->pagination_center->paginating($page, $num_rows, $per_page, 20);//$page_now = 1, $row_total = 1, $per_page = 20, $page_limit = 20
-
-		$page_start = (($per_page * $page) - $per_page);
-		if($page_start==0){ $page_start = 1;}
-
-		$this->db->select('*');
-		$this->db->from("( SELECT 
-				 t1.id as transfer_id,
-				 t1.cancel_date, 
-				 t2.contract_number,
-				 t2.loan_amount,
-				 t1.date_transfer,
-				 t1.admin_id,
-				 t1.transfer_status,
-				 t3.user_name,
-				 t4.firstname_th,
-				 t4.lastname_th,
-				 ROW_NUMBER() OVER (ORDER BY t1.cancel_date DESC) as row 
-			FROM 
-				coop_loan_transfer as t1
-				LEFT JOIN coop_loan as t2 ON t1.loan_id = t2.id
-				LEFT JOIN coop_user as t3 ON t1.admin_id = t3.user_id
-				LEFT JOIN coop_mem_apply as t4 ON t2.member_id = t4.member_id
-			WHERE 
-				transfer_status IN('1','2')) a");
-		$this->db->where("row >= ".$page_start." AND row <= ".($page_start+$per_page-1));
-		//$this->db->limit($page_start, $per_page);
-		$this->db->order_by('cancel_date DESC');
-		$row = $this->db->get()->result_array();
-		//print_r($this->db->last_query());exit;
-
-		$i = $page_start;
+		$x=0;
+		$join_arr = array();
+		$join_arr[$x]['table'] = 'coop_loan';
+		$join_arr[$x]['condition'] = 'coop_loan_transfer.loan_id = coop_loan.id';
+		$join_arr[$x]['type'] = 'left';
+		$x++;
+		$join_arr[$x]['table'] = 'coop_mem_apply';
+		$join_arr[$x]['condition'] = 'coop_mem_apply.member_id = coop_loan.member_id';
+		$join_arr[$x]['type'] = 'left';
+		$x++;
+		$join_arr[$x]['table'] = 'coop_user';
+		$join_arr[$x]['condition'] = 'coop_loan.admin_id = coop_user.user_id';
+		$join_arr[$x]['type'] = 'left';
+		
+		$this->paginater_all->type(DB_TYPE);
+		$this->paginater_all->select('coop_loan_transfer.id as transfer_id,
+				 coop_loan_transfer.cancel_date, 
+				 coop_loan.contract_number,
+				 coop_loan.loan_amount,
+				 coop_loan_transfer.date_transfer,
+				 coop_loan_transfer.admin_id,
+				 coop_loan_transfer.transfer_status,
+				 coop_user.user_name,
+				 coop_mem_apply.firstname_th,
+				 coop_mem_apply.lastname_th');
+		$this->paginater_all->main_table('coop_loan_transfer');
+		$this->paginater_all->where("transfer_status IN('1','2')");
+		$this->paginater_all->page_now(@$_GET["page"]);
+		$this->paginater_all->per_page(10);
+		$this->paginater_all->page_link_limit(20);
+		$this->paginater_all->order_by('cancel_date DESC');
+		$this->paginater_all->join_arr($join_arr);
+		$row = $this->paginater_all->paginater_process();
+		//echo"<pre>";print_r($row);exit;
+		$paging = $this->pagination_center->paginating($row['page'], $row['num_rows'], $row['per_page'], $row['page_link_limit']);//$page_now = 1, $row_total = 1, $per_page = 20, $page_limit = 20
+		$i = $row['page_start'];
 
 
-		$arr_data['num_rows'] = $num_rows;
+		$arr_data['num_rows'] = $row['num_rows'];
 		$arr_data['paging'] = $paging;
-		$arr_data['data'] = $row;
-		$arr_data['i'] = $i;	
+		$arr_data['data'] = $row['data'];
+		$arr_data['i'] = $i;
 		
 		$loan_type = array();
 		$this->db->select('*');

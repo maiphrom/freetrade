@@ -86,7 +86,7 @@
                             <tr>
                                 <td><?php echo $i++; ?></td>
                                 <td><?php echo $value['member_id']; ?></td>
-                                <td><?php echo $value['firstname_th']." ".$value['lastname_th']; ?></td>
+                                <td><?php echo $value['prename_short'].$value['firstname_th']." ".$value['lastname_th']; ?></td>
                                 <td><?php echo $this->center_function->mydate2date($value['apply_date']); ?></td>
                                 <td>
                                     <a href="<?php echo base_url(PROJECTPATH.'/manage_member_share/add/'.$value['id']);?>">แก้ไข</a> 
