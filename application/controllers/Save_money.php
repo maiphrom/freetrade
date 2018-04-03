@@ -9,31 +9,28 @@ class Save_money extends CI_Controller {
 	public function index()
 	{
 		$arr_data = array();
+
+		$x=0;
+		$join_arr = array();
 		
-		$this->db->select('*');
-		$this->db->from('coop_maco_account');
-		$row = $this->db->get()->result_array();
-
-		$num_rows = count($row);
-		$per_page = 20 ;
-		$page = isset($_GET["page"]) ? ((int) $_GET["page"]) : 1;
-		$paging = $this->pagination_center->paginating($page, $num_rows, $per_page, 20);//$page_now = 1, $row_total = 1, $per_page = 20, $page_limit = 20
-
-		$page_start = (($per_page * $page) - $per_page);
-		if($page_start==0){ $page_start = 1;}
-
-		$this->db->select('*');
-		$this->db->from("( SELECT *,ROW_NUMBER() OVER (ORDER BY account_id DESC) as row FROM coop_maco_account) as a");
-		$this->db->where("row >= ".$page_start." AND row <= ".($page_start+$per_page-1));
-		$this->db->order_by('account_id DESC');
-		$row = $this->db->get()->result_array();
-
-		$i = $page_start;
+		$this->paginater_all->type(DB_TYPE);
+		$this->paginater_all->select('*');
+		$this->paginater_all->main_table('coop_maco_account');
+		$this->paginater_all->where("");
+		$this->paginater_all->page_now(@$_GET["page"]);
+		$this->paginater_all->per_page(10);
+		$this->paginater_all->page_link_limit(20);
+		$this->paginater_all->order_by('account_id DESC');
+		$this->paginater_all->join_arr($join_arr);
+		$row = $this->paginater_all->paginater_process();
+		//echo"<pre>";print_r($row);exit;
+		$paging = $this->pagination_center->paginating($row['page'], $row['num_rows'], $row['per_page'], $row['page_link_limit']);//$page_now = 1, $row_total = 1, $per_page = 20, $page_limit = 20
+		$i = $row['page_start'];
 
 
-		$arr_data['num_rows'] = $num_rows;
+		$arr_data['num_rows'] = $row['num_rows'];
 		$arr_data['paging'] = $paging;
-		$arr_data['data'] = $row;
+		$arr_data['data'] = $row['data'];
 		$arr_data['i'] = $i;
 		
 		$this->libraries->template('save_money/index',$arr_data);
@@ -138,48 +135,52 @@ class Save_money extends CI_Controller {
 		$this->db->join('coop_deposit_type_setting as t3','t1.type_id = t3.type_id','left');
 		$this->db->where("account_id = '".$account_id."'");
 		$row = $this->db->get()->result_array();
-		$arr_data['row_memberall'] = $row[0];
+		$arr_data['row_memberall'] = @$row[0];
 		
 		$this->db->select('*');
 		$this->db->from('coop_mem_apply');
 		$this->db->where("member_id = '".$arr_data['row_memberall']['mem_id']."'");
 		$row = $this->db->get()->result_array();
-		$arr_data['row_member'] = $row[0];
+		$arr_data['row_member'] = @$row[0];
+		
+		$x=0;
+		$join_arr = array();
+		$join_arr[$x]['table'] = 'coop_user';
+		$join_arr[$x]['condition'] = 'coop_account_transaction.user_id = coop_user.user_id';
+		$join_arr[$x]['type'] = 'left';
+		
+		$this->paginater_all->type(DB_TYPE);
+		$this->paginater_all->select('coop_account_transaction.*, coop_user.user_name');
+		$this->paginater_all->main_table('coop_account_transaction');
+		$this->paginater_all->where("account_id = '".$account_id."'");
+		$this->paginater_all->page_now(@$_GET["page"]);
+		$this->paginater_all->per_page(10);
+		$this->paginater_all->page_link_limit(20);
+		$this->paginater_all->order_by('transaction_id DESC');
+		$this->paginater_all->join_arr($join_arr);
+		$row = $this->paginater_all->paginater_process();
+		//echo $this->db->last_query();exit;
+		//echo"<pre>";print_r($row);exit;
+		$paging = $this->pagination_center->paginating($row['page'], $row['num_rows'], $row['per_page'], $row['page_link_limit'], $_GET);//$page_now = 1, $row_total = 1, $per_page = 20, $page_limit = 20
+		
+		$i = $row['page_start'];
+
+		$arr_data['num_rows'] = $row['num_rows'];
+		$arr_data['paging'] = $paging;
+		$arr_data['data'] = $row['data'];
+		$arr_data['i'] = $i;
 		
 		$this->db->select('*');
 		$this->db->from('coop_account_transaction');
 		$this->db->where("account_id = '".$account_id."'");
 		$row = $this->db->get()->result_array();
-		
 		$num_arr = array();
 		$i = 1;
 		foreach($row as $key => $value){
 			$num_arr[$value['transaction_id']] = $i++;
 		}
-
-		$num_rows = count($row);
-		$per_page = 20 ;
-		$page = isset($_GET["page"]) ? ((int) $_GET["page"]) : 1;
-		$paging = $this->pagination_center->paginating($page, $num_rows, $per_page, 20);//$page_now = 1, $row_total = 1, $per_page = 20, $page_limit = 20
-
-		$page_start = (($per_page * $page) - $per_page);
-		if($page_start==0){ $page_start = 1;}
-
-		$this->db->select('*');
-		$this->db->from("( SELECT coop_account_transaction.*, coop_user.user_name, ROW_NUMBER() OVER (ORDER BY transaction_id DESC) as row FROM coop_account_transaction 
-		LEFT JOIN coop_user ON coop_account_transaction.user_id = coop_user.user_id
-		WHERE account_id = '".$account_id."' ) a");
-		$this->db->where("row >= ".$page_start." AND row <= ".($page_start+$per_page-1));
-		$this->db->order_by('transaction_id DESC');
-		$row = $this->db->get()->result_array();
 		
-		$i = $page_start;
-
 		$arr_data['num_arr'] = $num_arr;
-		$arr_data['num_rows'] = $num_rows;
-		$arr_data['paging'] = $paging;
-		$arr_data['data'] = $row;
-		$arr_data['i'] = $i;
 		
 		$this->db->select('min_first_deposit');
 		$this->db->from('coop_deposit_setting');

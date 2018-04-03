@@ -9,37 +9,32 @@ class Report_problem_data extends CI_Controller {
 	
 	public function report_problem(){
 		$arr_data = array();
-		$this->db->select('COUNT(t1.user_id) as _c');
-		$this->db->from('report_problem as t1');
-		$this->db->join("coop_user as t2", "t1.user_id = t2.user_id ", "left");
-		$this->db->where("1=1 AND t1.user_id = '{$_SESSION['USER_ID']}'");
-		$count = $this->db->get()->result_array();
-
-		$num_rows = $count[0]["_c"] ;
-		$per_page = 20 ;
-		$page = isset($_GET["page"]) ? ((int) $_GET["page"]) : 1;
-		$paging = $this->pagination_center->paginating($page, $num_rows, $per_page, 20);//$page_now = 1, $row_total = 1, $per_page = 20, $page_limit = 20
-
-		$page_start = (($per_page * $page) - $per_page);
-		if($page_start==0){ $page_start = 1;}
-
-		$this->db->select('*');
-		$this->db->from("( SELECT t1.*,
-									t2.user_name ,
-									ROW_NUMBER() OVER (ORDER BY t1.problem_id ASC) as row 
-									FROM report_problem as t1 
-									LEFT JOIN coop_user as t2 ON t1.user_id = t2.user_id 
-								WHERE 
-									1=1 AND t1.user_id = '{$_SESSION['USER_ID']}' ) a");
-		$this->db->where("row >= ".$page_start." AND row <= ".($page_start+$per_page-1));
-		$rs = $this->db->get()->result_array();
 		
-		$i = $page_start;
+		$x=0;
+		$join_arr = array();
+		$join_arr[$x]['table'] = 'coop_user';
+		$join_arr[$x]['condition'] = 'report_problem.user_id = coop_user.user_id ';
+		$join_arr[$x]['type'] = 'left';
+		
+		$this->paginater_all->type(DB_TYPE);
+		$this->paginater_all->select('report_problem.*,
+									coop_user.user_name');
+		$this->paginater_all->main_table('report_problem');
+		$this->paginater_all->where("report_problem.user_id = '{$_SESSION['USER_ID']}'");
+		$this->paginater_all->page_now(@$_GET["page"]);
+		$this->paginater_all->per_page(10);
+		$this->paginater_all->page_link_limit(20);
+		$this->paginater_all->order_by('problem_id ASC');
+		$this->paginater_all->join_arr($join_arr);
+		$row = $this->paginater_all->paginater_process();
+		//echo"<pre>";print_r($row);exit;
+		$paging = $this->pagination_center->paginating($row['page'], $row['num_rows'], $row['per_page'], $row['page_link_limit']);//$page_now = 1, $row_total = 1, $per_page = 20, $page_limit = 20
+		$i = $row['page_start'];
 
 
-		$arr_data['num_rows'] = $num_rows;
+		$arr_data['num_rows'] = $row['num_rows'];
 		$arr_data['paging'] = $paging;
-		$arr_data['rs'] = $rs;
+		$arr_data['rs'] = $row['data'];
 		$arr_data['i'] = $i;
 		
 		$this->libraries->template('report_problem_data/report_problem',$arr_data);

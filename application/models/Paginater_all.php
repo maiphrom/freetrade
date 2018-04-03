@@ -79,12 +79,16 @@ class Paginater_all extends CI_Model {
 		$page = $page_now ? ((int) $page_now) : 1;
 		
 		$page_start = (($per_page * $page) - $per_page);
-		if($page_start==0){ $page_start = 1;}
+		if($page_start==0){ 
+			$page_start = 1;
+		}else{
+			$page_start += 1;
+		}
 
 		if($type == 'sql_server'){
 			$this->db->select($select);
-			$this->db->from('( SELECT *, ROW_NUMBER() OVER (ORDER BY '.$order_by.') as row FROM '.$main_table.' ) as '.$main_table);
-			$this->db->where("1=1 ".$where." AND row >= ".$page_start." AND row <= ".($page_start+$per_page-1));
+			$this->db->from('( SELECT *, ROW_NUMBER() OVER (ORDER BY '.$order_by.') as row FROM '.$main_table.' WHERE 1=1 '.$where.') as '.$main_table);
+			$this->db->where("row >= ".$page_start." AND row <= ".($page_start+$per_page-1));
 			if(!empty($join_arr)){
 				foreach($join_arr as $key => $value){
 					$this->db->join($value['table'], $value['condition'], $value['type']);

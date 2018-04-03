@@ -35,7 +35,7 @@ function del_coop_account_data(id){
     function(isConfirm) {
         if (isConfirm) {			
 			$.ajax({
-				url: base_url+'/setting_account_data/del_coop_account_receipt_data',
+				url: base_url+'/setting_account_data2/del_coop_account_receipt_data',
 				method: 'POST',
 				data: {
 					'table': 'coop_account_list',
@@ -45,7 +45,7 @@ function del_coop_account_data(id){
 				success: function(msg){
 				  // console.log(msg); return false;
 					if(msg == 1){
-					  document.location.href = base_url+'setting_account_data/coop_account_receipt';
+					  document.location.href = base_url+'setting_account_data2/coop_account_receipt';
 					}else{
 
 					}

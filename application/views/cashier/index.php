@@ -86,7 +86,7 @@
 						</select>
 					</div>
 					<div class="g24-col-sm-2 control-label">
-						<a href="<?php echo PROJECTPATH."/setting_account_data/coop_account_receipt";?>"> ตั้งค่า </a>
+						<a href="<?php echo PROJECTPATH."/setting_account_data2/coop_account_receipt";?>"> ตั้งค่า </a>
 					</div>
 					
 					

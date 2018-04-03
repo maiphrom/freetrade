@@ -448,34 +448,33 @@ class Setting_basic_data extends CI_Controller {
 			$rs = $this->db->get()->result_array();
 			$arr_data['row'] = @$rs[0]; 	
 		}else{	
-			$this->db->select('COUNT(bank_id) as _c');
-			$this->db->from('coop_bank');
-			$count = $this->db->get()->result_array();
-
-			$num_rows = $count[0]["_c"] ;
-			$per_page = 10 ;
-			$page = isset($_GET["page"]) ? ((int) $_GET["page"]) : 1;
-			$paging = $this->pagination_center->paginating($page, $num_rows, $per_page, 20);//$page_now = 1, $row_total = 1, $per_page = 20, $page_limit = 20
-
-			$page_start = (($per_page * $page) - $per_page);
-			if($page_start==0){ $page_start = 1;}
-
-			$this->db->select('*');			
-			$this->db->from('( SELECT coop_bank.*,coop_bank_branch.total, ROW_NUMBER() OVER (ORDER BY coop_bank.bank_id DESC) as row FROM coop_bank  
-								LEFT JOIN (SELECT coop_bank_branch.bank_id,count(coop_bank_branch.bank_id) as total from coop_bank_branch 
-								GROUP BY coop_bank_branch.bank_id) AS coop_bank_branch 
-								ON coop_bank.bank_id = coop_bank_branch.bank_id ) a');
-			$this->db->where("row >= ".$page_start." AND row <= ".($page_start+$per_page-1));
-			//$this->db->limit($page_start, $per_page);
-			$this->db->order_by('bank_id DESC');
-			$rs = $this->db->get()->result_array();
 			
-			$i = $page_start;
+			$x=0;
+			$join_arr = array();
+			$join_arr[$x]['table'] = '(SELECT coop_bank_branch.bank_id,count(coop_bank_branch.bank_id) as total from coop_bank_branch 
+								GROUP BY coop_bank_branch.bank_id) AS coop_bank_branch';
+			$join_arr[$x]['condition'] = 'coop_bank.bank_id = coop_bank_branch.bank_id';
+			$join_arr[$x]['type'] = 'left';
+			
+			$this->paginater_all->type(DB_TYPE);
+			$this->paginater_all->select('coop_bank.*,coop_bank_branch.total');
+			$this->paginater_all->main_table('coop_bank');
+			$this->paginater_all->where("");
+			$this->paginater_all->page_now(@$_GET["page"]);
+			$this->paginater_all->per_page(10);
+			$this->paginater_all->page_link_limit(20);
+			$this->paginater_all->order_by('coop_bank.bank_id DESC');
+			$this->paginater_all->join_arr($join_arr);
+			$row = $this->paginater_all->paginater_process();
+			//echo $this->db->last_query();exit;
+			//echo"<pre>";print_r($row);exit;
+			$paging = $this->pagination_center->paginating($row['page'], $row['num_rows'], $row['per_page'], $row['page_link_limit'], $_GET);//$page_now = 1, $row_total = 1, $per_page = 20, $page_limit = 20
+			
+			$i = $row['page_start'];
 
-
-			$arr_data['num_rows'] = $num_rows;
+			$arr_data['num_rows'] = $row['num_rows'];
 			$arr_data['paging'] = $paging;
-			$arr_data['rs'] = $rs;
+			$arr_data['rs'] = $row['data'];
 			$arr_data['i'] = $i;
 		}
 		$this->libraries->template('setting_basic_data/coop_bank',$arr_data);
@@ -563,32 +562,35 @@ class Setting_basic_data extends CI_Controller {
 			$rs_name = $this->db->get()->result_array();
 			$bank_name = $rs_name[0]['bank_name'];
 			
-			$this->db->select('COUNT(branch_id) as _c');
-			$this->db->from('coop_bank_branch');
-			$this->db->where("bank_id  = '{$bank_id}'");
-			$count = $this->db->get()->result_array();
-
-			$num_rows = $count[0]["_c"] ;
-			$per_page = 40 ;
-			$page = isset($_GET["page"]) ? ((int) $_GET["page"]) : 1;
-			$paging = $this->pagination_center->paginating($page, $num_rows, $per_page, 20);//$page_now = 1, $row_total = 1, $per_page = 20, $page_limit = 20
-
-			$page_start = (($per_page * $page) - $per_page);
-			if($page_start==0){ $page_start = 1;}
-
-			$this->db->select('*');
-			$this->db->from('( SELECT coop_bank_branch.*,coop_amphur.amphur_name,coop_province.province_name, ROW_NUMBER() OVER (ORDER BY branch_id DESC) as row FROM coop_bank_branch  
-								LEFT JOIN coop_amphur ON coop_bank_branch.amphur_id = coop_amphur.amphur_id
-								LEFT JOIN coop_province ON coop_bank_branch.province_id = coop_province.province_id) a');
-			$this->db->where("bank_id  = '{$bank_id}' AND row >= ".$page_start." AND row <= ".($page_start+$per_page-1));
-			$rs = $this->db->get()->result_array();
+			$x=0;
+			$join_arr = array();
+			$join_arr[$x]['table'] = 'coop_amphur';
+			$join_arr[$x]['condition'] = 'coop_bank_branch.amphur_id = coop_amphur.amphur_id';
+			$join_arr[$x]['type'] = 'left';
+			$x++;
+			$join_arr[$x]['table'] = 'coop_province';
+			$join_arr[$x]['condition'] = 'coop_bank_branch.province_id = coop_province.province_id';
+			$join_arr[$x]['type'] = 'left';
 			
-			$i = $page_start;
+			$this->paginater_all->type(DB_TYPE);
+			$this->paginater_all->select('coop_bank_branch.*,coop_amphur.amphur_name,coop_province.province_name');
+			$this->paginater_all->main_table('coop_bank_branch');
+			$this->paginater_all->where("bank_id  = '{$bank_id}'");
+			$this->paginater_all->page_now(@$_GET["page"]);
+			$this->paginater_all->per_page(10);
+			$this->paginater_all->page_link_limit(20);
+			$this->paginater_all->order_by('branch_id DESC');
+			$this->paginater_all->join_arr($join_arr);
+			$row = $this->paginater_all->paginater_process();
+			//echo $this->db->last_query();exit;
+			//echo"<pre>";print_r($row);exit;
+			$paging = $this->pagination_center->paginating($row['page'], $row['num_rows'], $row['per_page'], $row['page_link_limit'], $_GET);//$page_now = 1, $row_total = 1, $per_page = 20, $page_limit = 20
+			
+			$i = $row['page_start'];
 
-
-			$arr_data['num_rows'] = $num_rows;
+			$arr_data['num_rows'] = $row['num_rows'];
 			$arr_data['paging'] = $paging;
-			$arr_data['rs'] = $rs;
+			$arr_data['rs'] = $row['data'];
 			$arr_data['i'] = $i;
 			
 			
@@ -737,30 +739,28 @@ class Setting_basic_data extends CI_Controller {
 			
 			$arr_data['admin_permissions'] = @$admin_permissions;
 		}else{
+			$x=0;
+			$join_arr = array();
 			
-			$this->db->select('COUNT(user_id) as _c');
-			$this->db->from('coop_user');
-			$count = $this->db->get()->result_array();
-
-			$num_rows = $count[0]["_c"] ;
-			$per_page = 20 ;
-			$page = isset($_GET["page"]) ? ((int) $_GET["page"]) : 1;
-			$paging = $this->pagination_center->paginating($page, $num_rows, $per_page, 20);//$page_now = 1, $row_total = 1, $per_page = 20, $page_limit = 20
-
-			$page_start = (($per_page * $page) - $per_page);
-			if($page_start==0){ $page_start = 1;}
-
-			$this->db->select('*');
-			$this->db->from('( SELECT *, ROW_NUMBER() OVER (ORDER BY user_type_id, user_id DESC) as row FROM coop_user ) a');
-			$this->db->where("row >= ".$page_start." AND row <= ".($page_start+$per_page-1));
-			$rs = $this->db->get()->result_array();
+			$this->paginater_all->type(DB_TYPE);
+			$this->paginater_all->select('*');
+			$this->paginater_all->main_table('coop_user');
+			$this->paginater_all->where("");
+			$this->paginater_all->page_now(@$_GET["page"]);
+			$this->paginater_all->per_page(10);
+			$this->paginater_all->page_link_limit(20);
+			$this->paginater_all->order_by('user_type_id, user_id DESC');
+			$this->paginater_all->join_arr($join_arr);
+			$row = $this->paginater_all->paginater_process();
+			//echo $this->db->last_query();exit;
+			//echo"<pre>";print_r($row);exit;
+			$paging = $this->pagination_center->paginating($row['page'], $row['num_rows'], $row['per_page'], $row['page_link_limit'], $_GET);//$page_now = 1, $row_total = 1, $per_page = 20, $page_limit = 20
 			
-			$i = $page_start;
+			$i = $row['page_start'];
 
-
-			$arr_data['num_rows'] = $num_rows;
+			$arr_data['num_rows'] = $row['num_rows'];
 			$arr_data['paging'] = $paging;
-			$arr_data['rs'] = $rs;
+			$arr_data['rs'] = $row['data'];
 			$arr_data['i'] = $i;	
 		}
 				
@@ -928,31 +928,28 @@ class Setting_basic_data extends CI_Controller {
 			$rs = $this->db->get()->result_array();
 			$arr_data['row'] = @$rs[0]; 	
 		}else{	
-			$this->db->select('COUNT(signature_id) as _c');
-			$this->db->from('coop_signature');
-			$count = $this->db->get()->result_array();
-
-			$num_rows = $count[0]["_c"] ;
-			$per_page = 10 ;
-			$page = isset($_GET["page"]) ? ((int) $_GET["page"]) : 1;
-			$paging = $this->pagination_center->paginating($page, $num_rows, $per_page, 20);//$page_now = 1, $row_total = 1, $per_page = 20, $page_limit = 20
-
-			$page_start = (($per_page * $page) - $per_page);
-			if($page_start==0){ $page_start = 1;}
-
-			$this->db->select('*');			
-			$this->db->from('( SELECT *, ROW_NUMBER() OVER (ORDER BY signature_id DESC) as row FROM coop_signature ) a');
-			$this->db->where("row >= ".$page_start." AND row <= ".($page_start+$per_page-1));
-			//$this->db->limit($page_start, $per_page);
-			$this->db->order_by('signature_id DESC');
-			$rs = $this->db->get()->result_array();
+			$x=0;
+			$join_arr = array();
 			
-			$i = $page_start;
+			$this->paginater_all->type(DB_TYPE);
+			$this->paginater_all->select('*');
+			$this->paginater_all->main_table('coop_signature');
+			$this->paginater_all->where("");
+			$this->paginater_all->page_now(@$_GET["page"]);
+			$this->paginater_all->per_page(10);
+			$this->paginater_all->page_link_limit(20);
+			$this->paginater_all->order_by('signature_id DESC');
+			$this->paginater_all->join_arr($join_arr);
+			$row = $this->paginater_all->paginater_process();
+			//echo $this->db->last_query();exit;
+			//echo"<pre>";print_r($row);exit;
+			$paging = $this->pagination_center->paginating($row['page'], $row['num_rows'], $row['per_page'], $row['page_link_limit'], $_GET);//$page_now = 1, $row_total = 1, $per_page = 20, $page_limit = 20
+			
+			$i = $row['page_start'];
 
-
-			$arr_data['num_rows'] = $num_rows;
+			$arr_data['num_rows'] = $row['num_rows'];
 			$arr_data['paging'] = $paging;
-			$arr_data['rs'] = $rs;
+			$arr_data['rs'] = $row['data'];
 			$arr_data['i'] = $i;
 		}
 		$this->libraries->template('setting_basic_data/coop_signature',$arr_data);

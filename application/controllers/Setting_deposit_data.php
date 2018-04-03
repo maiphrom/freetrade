@@ -60,32 +60,32 @@ class Setting_deposit_data extends CI_Controller {
 				$where = "AND  coop_interest.type_id = '{$filter}'";
 			}
 			
-			$this->db->select('COUNT(interest_id) as _c');
-			$this->db->from('coop_interest');
-			$this->db->where('1=1 '.$where);
-			$count = $this->db->get()->result_array();
-
-			$num_rows = $count[0]["_c"] ;
-			$per_page = 10 ;
-			$page = isset($_GET["page"]) ? ((int) $_GET["page"]) : 1;
-			$paging = $this->pagination_center->paginating($page, $num_rows, $per_page, 20);//$page_now = 1, $row_total = 1, $per_page = 20, $page_limit = 20
-
-			$page_start = (($per_page * $page) - $per_page);
-			if($page_start==0){ $page_start = 1;}
-
-			$this->db->select('*');			
-			$this->db->from("( SELECT coop_interest.*,coop_deposit_type_setting.type_name, ROW_NUMBER() OVER (ORDER BY coop_interest.interest_id ASC) as row FROM coop_interest  
-								LEFT JOIN coop_deposit_type_setting ON coop_interest.type_id = coop_deposit_type_setting.type_id WHERE 1=1 ".$where.") a");
-			$this->db->where("row >= ".$page_start." AND row <= ".($page_start+$per_page-1));
-			$this->db->order_by('interest_id ASC');
-			$rs = $this->db->get()->result_array();
+			$x=0;
+			$join_arr = array();
+			$join_arr[$x]['table'] = 'coop_deposit_type_setting';
+			$join_arr[$x]['condition'] = 'coop_interest.type_id = coop_deposit_type_setting.type_id';
+			$join_arr[$x]['type'] = 'left';
 			
-			$i = $page_start;
+			$this->paginater_all->type(DB_TYPE);
+			$this->paginater_all->select('coop_interest.*,coop_deposit_type_setting.type_name');
+			$this->paginater_all->main_table('coop_interest');
+			$this->paginater_all->where($where);
+			$this->paginater_all->page_now(@$_GET["page"]);
+			$this->paginater_all->per_page(10);
+			$this->paginater_all->page_link_limit(20);
+			$this->paginater_all->order_by('coop_interest.interest_id ASC');
+			$this->paginater_all->join_arr($join_arr);
+			$row = $this->paginater_all->paginater_process();
+			//echo $this->db->last_query();exit;
+			//echo"<pre>";print_r($row);exit;
+			$paging = $this->pagination_center->paginating($row['page'], $row['num_rows'], $row['per_page'], $row['page_link_limit'], $_GET);//$page_now = 1, $row_total = 1, $per_page = 20, $page_limit = 20
+			
+			$i = $row['page_start'];
 
-			$arr_data['num_rows'] = $num_rows;
+			$arr_data['num_rows'] = $row['num_rows'];
 			$arr_data['paging'] = $paging;
-			$arr_data['rs'] = $rs;
-			$arr_data['i'] = $i;
+			$arr_data['rs'] = $row['data'];
+			$arr_data['i'] = $i;			
 		}
 		
 		$this->db->select(array('*'));

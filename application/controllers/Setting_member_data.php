@@ -17,29 +17,28 @@ class Setting_member_data extends CI_Controller {
 			$rs = $this->db->get()->result_array();
 			$arr_data['row'] = @$rs[0];
 		}else{	
-			$this->db->select('COUNT(prename_id) as _c');
-			$this->db->from('coop_prename');
-			$count = $this->db->get()->result_array();
-
-			$num_rows = $count[0]["_c"] ;
-			$per_page = 20 ;
-			$page = isset($_GET["page"]) ? ((int) $_GET["page"]) : 1;
-			$paging = $this->pagination_center->paginating($page, $num_rows, $per_page, 20);//$page_now = 1, $row_total = 1, $per_page = 20, $page_limit = 20
-
-			$page_start = (($per_page * $page) - $per_page);
-			if($page_start==0){ $page_start = 1;}
-
-			$this->db->select('*');
-			$this->db->from('( SELECT *, ROW_NUMBER() OVER (ORDER BY prename_id ASC) as row FROM coop_prename ) a');
-			$this->db->where("row >= ".$page_start." AND row <= ".($page_start+$per_page-1));
-			$rs = $this->db->get()->result_array();
+			$x=0;
+			$join_arr = array();
 			
-			$i = $page_start;
+			$this->paginater_all->type(DB_TYPE);
+			$this->paginater_all->select('*');
+			$this->paginater_all->main_table('coop_prename');
+			$this->paginater_all->where("");
+			$this->paginater_all->page_now(@$_GET["page"]);
+			$this->paginater_all->per_page(10);
+			$this->paginater_all->page_link_limit(20);
+			$this->paginater_all->order_by('prename_id ASC');
+			$this->paginater_all->join_arr($join_arr);
+			$row = $this->paginater_all->paginater_process();
+			//echo $this->db->last_query();exit;
+			//echo"<pre>";print_r($row);exit;
+			$paging = $this->pagination_center->paginating($row['page'], $row['num_rows'], $row['per_page'], $row['page_link_limit'], $_GET);//$page_now = 1, $row_total = 1, $per_page = 20, $page_limit = 20
+			
+			$i = $row['page_start'];
 
-
-			$arr_data['num_rows'] = $num_rows;
+			$arr_data['num_rows'] = $row['num_rows'];
 			$arr_data['paging'] = $paging;
-			$arr_data['rs'] = $rs;
+			$arr_data['rs'] = $row['data'];
 			$arr_data['i'] = $i;
 		}
 		$this->libraries->template('setting_member_data/coop_prename',$arr_data);
@@ -351,29 +350,28 @@ class Setting_member_data extends CI_Controller {
 			$rs = $this->db->get()->result_array();
 			$arr_data['row'] = @$rs[0];
 		}else{	
-			$this->db->select('COUNT(apply_type_id) as _c');
-			$this->db->from('coop_mem_apply_type');
-			$count = $this->db->get()->result_array();
-
-			$num_rows = $count[0]["_c"] ;
-			$per_page = 20 ;
-			$page = isset($_GET["page"]) ? ((int) $_GET["page"]) : 1;
-			$paging = $this->pagination_center->paginating($page, $num_rows, $per_page, 20);//$page_now = 1, $row_total = 1, $per_page = 20, $page_limit = 20
-
-			$page_start = (($per_page * $page) - $per_page);
-			if($page_start==0){ $page_start = 1;}
-
-			$this->db->select('*');
-			$this->db->from('( SELECT *,ROW_NUMBER() OVER (ORDER BY apply_type_id ASC) as row FROM coop_mem_apply_type) a');									
-			$this->db->where("row >= ".$page_start." AND row <= ".($page_start+$per_page-1));
-			$rs = $this->db->get()->result_array();
+			$x=0;
+			$join_arr = array();
 			
-			$i = $page_start;
+			$this->paginater_all->type(DB_TYPE);
+			$this->paginater_all->select('*');
+			$this->paginater_all->main_table('coop_mem_apply_type');
+			$this->paginater_all->where("");
+			$this->paginater_all->page_now(@$_GET["page"]);
+			$this->paginater_all->per_page(10);
+			$this->paginater_all->page_link_limit(20);
+			$this->paginater_all->order_by('apply_type_id ASC');
+			$this->paginater_all->join_arr($join_arr);
+			$row = $this->paginater_all->paginater_process();
+			//echo $this->db->last_query();exit;
+			//echo"<pre>";print_r($row);exit;
+			$paging = $this->pagination_center->paginating($row['page'], $row['num_rows'], $row['per_page'], $row['page_link_limit'], $_GET);//$page_now = 1, $row_total = 1, $per_page = 20, $page_limit = 20
+			
+			$i = $row['page_start'];
 
-
-			$arr_data['num_rows'] = $num_rows;
+			$arr_data['num_rows'] = $row['num_rows'];
 			$arr_data['paging'] = $paging;
-			$arr_data['rs'] = $rs;
+			$arr_data['rs'] = $row['data'];
 			$arr_data['i'] = $i;
 		}
 		//print_r($this->db->last_query());exit;
@@ -417,29 +415,28 @@ class Setting_member_data extends CI_Controller {
 			$rs = $this->db->get()->result_array();
 			$arr_data['row'] = @$rs[0];
 		}else{	
-			$this->db->select('COUNT(resign_cause_id) as _c');
-			$this->db->from('coop_mem_resign_cause');
-			$count = $this->db->get()->result_array();
-
-			$num_rows = $count[0]["_c"] ;
-			$per_page = 20 ;
-			$page = isset($_GET["page"]) ? ((int) $_GET["page"]) : 1;
-			$paging = $this->pagination_center->paginating($page, $num_rows, $per_page, 20);//$page_now = 1, $row_total = 1, $per_page = 20, $page_limit = 20
-
-			$page_start = (($per_page * $page) - $per_page);
-			if($page_start==0){ $page_start = 1;}
-
-			$this->db->select('*');
-			$this->db->from('( SELECT *,ROW_NUMBER() OVER (ORDER BY resign_cause_id ASC) as row FROM coop_mem_resign_cause) a');									
-			$this->db->where("row >= ".$page_start." AND row <= ".($page_start+$per_page-1));
-			$rs = $this->db->get()->result_array();
+			$x=0;
+			$join_arr = array();
 			
-			$i = $page_start;
+			$this->paginater_all->type(DB_TYPE);
+			$this->paginater_all->select('*');
+			$this->paginater_all->main_table('coop_mem_resign_cause');
+			$this->paginater_all->where("");
+			$this->paginater_all->page_now(@$_GET["page"]);
+			$this->paginater_all->per_page(10);
+			$this->paginater_all->page_link_limit(20);
+			$this->paginater_all->order_by('resign_cause_id ASC');
+			$this->paginater_all->join_arr($join_arr);
+			$row = $this->paginater_all->paginater_process();
+			//echo $this->db->last_query();exit;
+			//echo"<pre>";print_r($row);exit;
+			$paging = $this->pagination_center->paginating($row['page'], $row['num_rows'], $row['per_page'], $row['page_link_limit'], $_GET);//$page_now = 1, $row_total = 1, $per_page = 20, $page_limit = 20
+			
+			$i = $row['page_start'];
 
-
-			$arr_data['num_rows'] = $num_rows;
+			$arr_data['num_rows'] = $row['num_rows'];
 			$arr_data['paging'] = $paging;
-			$arr_data['rs'] = $rs;
+			$arr_data['rs'] = $row['data'];
 			$arr_data['i'] = $i;
 		}
 		//print_r($this->db->last_query());exit;
@@ -484,29 +481,28 @@ class Setting_member_data extends CI_Controller {
 			$rs = $this->db->get()->result_array();
 			$arr_data['row'] = @$rs[0];
 		}else{	
-			$this->db->select('COUNT(relation_id) as _c');
-			$this->db->from('coop_mem_relation');
-			$count = $this->db->get()->result_array();
-
-			$num_rows = $count[0]["_c"] ;
-			$per_page = 20 ;
-			$page = isset($_GET["page"]) ? ((int) $_GET["page"]) : 1;
-			$paging = $this->pagination_center->paginating($page, $num_rows, $per_page, 20);//$page_now = 1, $row_total = 1, $per_page = 20, $page_limit = 20
-
-			$page_start = (($per_page * $page) - $per_page);
-			if($page_start==0){ $page_start = 1;}
-
-			$this->db->select('*');
-			$this->db->from('( SELECT *,ROW_NUMBER() OVER (ORDER BY relation_id ASC) as row FROM coop_mem_relation) a');									
-			$this->db->where("row >= ".$page_start." AND row <= ".($page_start+$per_page-1));
-			$rs = $this->db->get()->result_array();
+			$x=0;
+			$join_arr = array();
 			
-			$i = $page_start;
+			$this->paginater_all->type(DB_TYPE);
+			$this->paginater_all->select('*');
+			$this->paginater_all->main_table('coop_mem_relation');
+			$this->paginater_all->where("");
+			$this->paginater_all->page_now(@$_GET["page"]);
+			$this->paginater_all->per_page(10);
+			$this->paginater_all->page_link_limit(20);
+			$this->paginater_all->order_by('relation_id ASC');
+			$this->paginater_all->join_arr($join_arr);
+			$row = $this->paginater_all->paginater_process();
+			//echo $this->db->last_query();exit;
+			//echo"<pre>";print_r($row);exit;
+			$paging = $this->pagination_center->paginating($row['page'], $row['num_rows'], $row['per_page'], $row['page_link_limit'], $_GET);//$page_now = 1, $row_total = 1, $per_page = 20, $page_limit = 20
+			
+			$i = $row['page_start'];
 
-
-			$arr_data['num_rows'] = $num_rows;
+			$arr_data['num_rows'] = $row['num_rows'];
 			$arr_data['paging'] = $paging;
-			$arr_data['rs'] = $rs;
+			$arr_data['rs'] = $row['data'];
 			$arr_data['i'] = $i;
 		}
 		//print_r($this->db->last_query());exit;
@@ -549,29 +545,28 @@ class Setting_member_data extends CI_Controller {
 			$rs = $this->db->get()->result_array();
 			$arr_data['row'] = @$rs[0];
 		}else{	
-			$this->db->select('COUNT(mem_type_id) as _c');
-			$this->db->from('coop_mem_type');
-			$count = $this->db->get()->result_array();
-
-			$num_rows = $count[0]["_c"] ;
-			$per_page = 20 ;
-			$page = isset($_GET["page"]) ? ((int) $_GET["page"]) : 1;
-			$paging = $this->pagination_center->paginating($page, $num_rows, $per_page, 20);//$page_now = 1, $row_total = 1, $per_page = 20, $page_limit = 20
-
-			$page_start = (($per_page * $page) - $per_page);
-			if($page_start==0){ $page_start = 1;}
-
-			$this->db->select('*');
-			$this->db->from('( SELECT *,ROW_NUMBER() OVER (ORDER BY mem_type_id ASC) as row FROM coop_mem_type) a');									
-			$this->db->where("row >= ".$page_start." AND row <= ".($page_start+$per_page-1));
-			$rs = $this->db->get()->result_array();
+			$x=0;
+			$join_arr = array();
 			
-			$i = $page_start;
+			$this->paginater_all->type(DB_TYPE);
+			$this->paginater_all->select('*');
+			$this->paginater_all->main_table('coop_mem_type');
+			$this->paginater_all->where("");
+			$this->paginater_all->page_now(@$_GET["page"]);
+			$this->paginater_all->per_page(10);
+			$this->paginater_all->page_link_limit(20);
+			$this->paginater_all->order_by('mem_type_id ASC');
+			$this->paginater_all->join_arr($join_arr);
+			$row = $this->paginater_all->paginater_process();
+			//echo $this->db->last_query();exit;
+			//echo"<pre>";print_r($row);exit;
+			$paging = $this->pagination_center->paginating($row['page'], $row['num_rows'], $row['per_page'], $row['page_link_limit'], $_GET);//$page_now = 1, $row_total = 1, $per_page = 20, $page_limit = 20
+			
+			$i = $row['page_start'];
 
-
-			$arr_data['num_rows'] = $num_rows;
+			$arr_data['num_rows'] = $row['num_rows'];
 			$arr_data['paging'] = $paging;
-			$arr_data['rs'] = $rs;
+			$arr_data['rs'] = $row['data'];
 			$arr_data['i'] = $i;
 		}
 

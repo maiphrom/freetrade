@@ -203,9 +203,9 @@ class Template_libraries extends CI_Model {
 					array("id" => 101, "name" => "ประเภทเงินฝาก", "url" => PROJECTPATH."/setting_deposit_data/coop_deposit_type_setting", "icon" => "", "img" => "money.png")
 				)),
 				array("id" => 50, "name" => "ระบบบัญชี", "url" => PROJECTPATH."/main_menu?section=admin.account_setting", "icon" => "icon-credit-card", "img" => "account.png", "submenus" => array(
-					array("id" => 95, "name" => "ผังบัญชี", "url" => PROJECTPATH."/setting_account_data/coop_account_chart", "icon" => "", "img" => "list_code.png"),
-					array("id" => 51, "name" => "รายการชำระ", "url" => PROJECTPATH."/setting_account_data/coop_account_receipt", "icon" => "", "img" => "finance.png"),
-					array("id" => 96, "name" => "รายการซื้อ", "url" => PROJECTPATH."/setting_account_data/coop_account_buy", "icon" => "", "img" => "finance.png")
+					array("id" => 95, "name" => "ผังบัญชี", "url" => PROJECTPATH."/setting_account_data2/coop_account_chart", "icon" => "", "img" => "list_code.png"),
+					array("id" => 51, "name" => "รายการชำระ", "url" => PROJECTPATH."/setting_account_data2/coop_account_receipt", "icon" => "", "img" => "finance.png"),
+					array("id" => 96, "name" => "รายการซื้อ", "url" => PROJECTPATH."/setting_account_data2/coop_account_buy", "icon" => "", "img" => "finance.png")
 				)),
 				array("id" => 55, "name" => "ระบบสินเชื่อ", "url" => PROJECTPATH."/main_menu?section=admin.credit_setting", "icon" => "icon-pencil-square-o", "img" => "coop_year.png", "submenus" => array(
 					array("id" => 56, "name" => "เงื่อนไขการกู้เงิน", "url" => PROJECTPATH."/setting_credit_data/coop_term_of_loan", "icon" => "", "img" => "finance.png"),

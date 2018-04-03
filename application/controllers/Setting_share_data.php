@@ -17,29 +17,28 @@ class Setting_share_data extends CI_Controller {
 			$rs = $this->db->get()->result_array();
 			$arr_data['row'] = @$rs[0];
 		}else{	
-			$this->db->select('COUNT(share_rule_id) as _c');
-			$this->db->from('coop_share_rule');
-			$count = $this->db->get()->result_array();
-
-			$num_rows = $count[0]["_c"] ;
-			$per_page = 20 ;
-			$page = isset($_GET["page"]) ? ((int) $_GET["page"]) : 1;
-			$paging = $this->pagination_center->paginating($page, $num_rows, $per_page, 20);//$page_now = 1, $row_total = 1, $per_page = 20, $page_limit = 20
-
-			$page_start = (($per_page * $page) - $per_page);
-			if($page_start==0){ $page_start = 1;}
-
-			$this->db->select('*');
-			$this->db->from('( SELECT *, ROW_NUMBER() OVER (ORDER BY salary_rule ASC) as row FROM coop_share_rule ) a');
-			$this->db->where("row >= ".$page_start." AND row <= ".($page_start+$per_page-1));
-			$rs = $this->db->get()->result_array();
+			$x=0;
+			$join_arr = array();
 			
-			$i = $page_start;
+			$this->paginater_all->type(DB_TYPE);
+			$this->paginater_all->select('*');
+			$this->paginater_all->main_table('coop_share_rule');
+			$this->paginater_all->where("");
+			$this->paginater_all->page_now(@$_GET["page"]);
+			$this->paginater_all->per_page(10);
+			$this->paginater_all->page_link_limit(20);
+			$this->paginater_all->order_by('salary_rule ASC');
+			$this->paginater_all->join_arr($join_arr);
+			$row = $this->paginater_all->paginater_process();
+			//echo $this->db->last_query();exit;
+			//echo"<pre>";print_r($row);exit;
+			$paging = $this->pagination_center->paginating($row['page'], $row['num_rows'], $row['per_page'], $row['page_link_limit'], $_GET);//$page_now = 1, $row_total = 1, $per_page = 20, $page_limit = 20
+			
+			$i = $row['page_start'];
 
-
-			$arr_data['num_rows'] = $num_rows;
+			$arr_data['num_rows'] = $row['num_rows'];
 			$arr_data['paging'] = $paging;
-			$arr_data['rs'] = $rs;
+			$arr_data['rs'] = $row['data'];
 			$arr_data['i'] = $i;
 			
 			$this->db->select(array('*'));

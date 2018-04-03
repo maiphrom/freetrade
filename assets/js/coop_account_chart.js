@@ -31,7 +31,7 @@ function open_modal(id){
 			if($('#account_chart_id').val()!=$('#old_account_chart_id').val()){
 				
 				$.ajax({
-					url: base_url+'/setting_account_data/check_account_chart',
+					url: base_url+'/setting_account_data2/check_account_chart',
 					method: 'POST',
 					data: {
 						'account_chart_id': $('#account_chart_id').val()
@@ -64,7 +64,7 @@ function open_modal(id){
 		function(isConfirm) {
 			if (isConfirm) {			
 			$.ajax({
-				url: base_url+'/setting_account_data/del_coop_account_data',
+				url: base_url+'/setting_account_data2/del_coop_account_data',
 				method: 'POST',
 				data: {
 					'table': 'coop_account_chart',
@@ -74,7 +74,7 @@ function open_modal(id){
 				success: function(msg){
 				  // console.log(msg); return false;
 					if(msg == 1){
-					  document.location.href = base_url+'setting_account_data/coop_account_chart';
+					  document.location.href = base_url+'setting_account_data2/coop_account_chart';
 					}else{
 
 					}

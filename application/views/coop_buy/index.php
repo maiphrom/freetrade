@@ -160,7 +160,7 @@
 							</div>
 							<label class="g24-col-sm-2 control-label" style="text-align:left;">
 								<!--a href="/admin/coop_buy_setting.php?act=add&return_url=coop_buy.php"> ตั้งค่า </a-->
-								<a href="<?php echo PROJECTPATH."/setting_account_data/coop_account_buy";?>"> ตั้งค่า </a>
+								<a href="<?php echo PROJECTPATH."/setting_account_data2/coop_account_buy";?>"> ตั้งค่า </a>
 							</label>
 							
 						</div>
