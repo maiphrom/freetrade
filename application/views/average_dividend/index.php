@@ -197,12 +197,12 @@
           <h2 class="modal-title" >เพิ่มข้อมูลปันผลและเฉลี่ยคืน</h2>
         </div>
         <div class="modal-body">
-		<form action="<?php echo base_url(PROJECTPATH.'/average_dividend/save_data')?>" method="POST">
+		<form data-toggle="validator" id="myForm" action="<?php echo base_url(PROJECTPATH.'/average_dividend/save_data')?>" method="POST">
 			<div class="g24-col-sm-24">
 				<div class="form-group g24-col-sm-24">
 					<label class="g24-col-sm-6 control-label">ปันผล</label>
 					<div class="g24-col-sm-5" >
-						<input class="form-control" name="dividend_percent" onKeyPress="return chkNumber(this)" type="text" value="">
+						<input class="form-control" name="dividend_percent" onKeyPress="return chkNumber(this)" type="text" value="" required title="กรุณากรอก  % ปันผล">
 					</div>
 					<label class="g24-col-sm-1 control-label">%</label>
 				</div>
@@ -211,7 +211,7 @@
 				<div class="form-group g24-col-sm-24">
 					<label class="g24-col-sm-6 control-label">เฉลี่ยคืน</label>
 					<div class="g24-col-sm-5" >
-						<input class="form-control" name="average_percent" onKeyPress="return chkNumber(this)" type="text" value="">
+						<input class="form-control" name="average_percent" onKeyPress="return chkNumber(this)" type="text" value="" required title="กรุณากรอก % เฉลี่ยคืน">
 					</div>
 					<label class="g24-col-sm-1 control-label">%</label>
 				</div>
@@ -219,7 +219,7 @@
 			<div class="g24-col-sm-24" style="padding-top:20px">
 				<div class="form-group g24-col-sm-24">
 					<div class="g24-col-sm-24" style="text-align:center;">
-						<input class="btn btn-info" type="submit" value="บันทึกข้อมูลปันผลเฉลี่ยคืน">
+						<input class="btn btn-info" type="button"  onclick="check_form()" value="บันทึกข้อมูลปันผลเฉลี่ยคืน">
 					</div>
 				</div>
 			</div>
@@ -237,8 +237,12 @@
 		$('#'+id).modal('hide');
 	}
 	function chkNumber(ele){
-	var vchar = String.fromCharCode(event.keyCode);
-	if ((vchar<'0' || vchar>'9') && (vchar != '.')) return false;
-	ele.onKeyPress=vchar;
-}
+		var vchar = String.fromCharCode(event.keyCode);
+		if ((vchar<'0' || vchar>'9') && (vchar != '.')) return false;
+		ele.onKeyPress=vchar;
+	}
+	
+	function check_form(){
+		$('#myForm').submit();
+	}
 </script>
