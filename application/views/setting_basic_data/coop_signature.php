@@ -84,20 +84,24 @@
 					<input name="type_add"  type="hidden" value="add" required>
 					<?php } ?>	
 					
-					<div class="form-group">
+					<div class="row">
 						<label class="col-sm-3 control-label" for="form-control-2">เริ่มใช้วันที่</label>
 						<div class="col-sm-9">
-						  <input id="start_date" name="start_date" class="form-control m-b-1" style="padding-left: 50px;" type="text" value="<?php echo $this->center_function->mydate2date(empty($row['start_date']) ? '' : @$row['start_date']); ?>" data-date-language="th-th" required >
-						  <span class="icon icon-calendar input-icon m-f-1"></span>
+						  <div class="form-group">
+							  <input id="start_date" name="start_date" class="form-control m-b-1" style="padding-left: 50px;" type="text" value="<?php echo $this->center_function->mydate2date(empty($row['start_date']) ? '' : @$row['start_date']); ?>" data-date-language="th-th" required title="กรุณาเลือก เริ่มใช้วันที่">
+							  <span class="icon icon-calendar input-icon m-f-1"></span>
+							</div>
 						</div>
 					</div>
-					<div class="form-group">
+					<div class="row">
 						<label class="col-sm-3 control-label" for="form-control-2">เจ้าหน้าที่การเงิน</label>
 						<div class="col-sm-9">
-						  <input id="finance_name" name="finance_name" class="form-control m-b-1" type="text" value="<?php echo @$row['finance_name'] ?>" required>
+							<div class="form-group">
+							  <input id="finance_name" name="finance_name" class="form-control m-b-1" type="text" value="<?php echo @$row['finance_name'] ?>" required title="กรุณากรอก เจ้าหน้าที่การเงิน">
+							</div>
 						</div>
 					</div>
-					<div class="form-group">
+					<div class="row">
 						<label class="col-sm-3 control-label" for="form-control-2">ลายเซ็นต์</label>
 						<div class="col-sm-9">
 							<div class="col-sm-9" style="margin-top: 6px;">
@@ -111,13 +115,15 @@
 							</div>
 						</div>
 					</div>
-					<div class="form-group">
+					<div class="row">
 						<label class="col-sm-3 control-label" for="form-control-2">ผู้รับเงิน</label>
 						<div class="col-sm-9">
-						  <input id="receive_name" name="receive_name" class="form-control m-b-1" type="text" value="<?php echo @$row['receive_name'] ?>" required>
+							<div class="form-group">
+							  <input id="receive_name" name="receive_name" class="form-control m-b-1" type="text" value="<?php echo @$row['receive_name'] ?>" required title="กรุณากรอก ผู้รับเงิน">
+							</div>
 						</div>
 					</div>
-					<div class="form-group">
+					<div class="row">
 						<label class="col-sm-3 control-label" for="form-control-2">ลายเซ็นต์</label>
 						<div class="col-sm-9">
 							<div class="col-sm-9" style="margin-top: 6px;">

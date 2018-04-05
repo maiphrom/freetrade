@@ -193,7 +193,7 @@ class Setting_basic_data extends CI_Controller {
 								 <td>'.$row['amphur_name'].'</td>  
 								 <td>'.$row['district_name'].'</td>  
 								 <td>'.$row['zipcode'].'</td>
-								 <td><a href="?act=add&province_id='.$row["province_id"].'&amphur_id='.$row['amphur_id'].'&district_id='.$row["district_id"].'&zipcode_id='.$row["id"].'">แก้ไข</a> | <span id="'.$row['id'].'" class="text-del del">ลบ</span></td>
+								 <td><a href="?act=add&province_id='.$row["province_id"].'&amphur_id='.$row['amphur_id'].'&district_id='.$row["district_id"].'&zipcode_id='.$row["id"].'">แก้ไข</a> | <span class="text-del del"  onclick="del_coop_address('.@$row['id'].')">ลบ</span></td>
 							</tr>  
 					   '; 
                $i++; 
@@ -694,7 +694,7 @@ class Setting_basic_data extends CI_Controller {
 					  <td>'.@$row_province['province_name'].'</td> 
 					  <td>
 					  <a href="?act=add&id="'.@$row["branch_id"].'&bank_id='.@$row['bank_id'].'">แก้ไข</a> | 
-					  <span id="'.@$row['branch_id'].'" class="text-del del">ลบ</span>
+					  <span class="text-del del"  onclick="del_coop_basic_data(\''.@$row['branch_id'].'\',\''.@$row['bank_id'].'\')">ลบ</span>
 					  </td> 
 
 					  </tr>
