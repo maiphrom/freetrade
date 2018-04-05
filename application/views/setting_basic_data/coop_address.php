@@ -120,10 +120,12 @@ $province_id = @$_GET['province_id'];
               <!-- เพิ่มจังหวัด -->
               <input name="type"  type="hidden" value="<?php echo @$add_type; ?>" >
               
-                  <div class="form-group">
-                    <label class="col-sm-3 control-label" for="form-control-1">ชื่อจังหวัด</label>
+                  <div class="row">
+                    <label class="col-sm-3 control-label" for="province_name">ชื่อจังหวัด</label>
                     <div class="col-sm-9">
-                      <input id="form-control-1" name="province_name" class="form-control m-b-1" type="text" value="" required>
+						<div class="form-group">
+						  <input id="form-control-1" name="province_name" class="form-control m-b-1" type="text" value="" required title="กรุณากรอก ชื่อจังหวัด">
+						</div>
                     </div>
                   </div>
               <!-- เพิ่มจังหวัด -->
@@ -132,34 +134,38 @@ $province_id = @$_GET['province_id'];
 
               <!-- เพิ่มอำเภอ -->
               <input name="type"  type="hidden" value="<?php echo @$add_type; ?>" >
-                  <div class="form-group">
-                    <label class="col-sm-3 control-label" for="form-control-2">จังหวัด</label>
-                    <div class="col-sm-9 m-b-1">
-                     <select name="province_id" id="form-control-6" class="form-control province" required>
-                        <option value="">เลือกจังหวัด</option>
-					<?php
-					if(!empty($rs_province)){
-						foreach(@$rs_province as $key => $row_province){ 
-					?>
+                  <div class="row">
+                    <label class="col-sm-3 control-label" for="province_id">จังหวัด</label>
+                    <div class="col-sm-9 m-b-1">                     
+						<div class="form-group">
+						  <select name="province_id" id="province_id" class="form-control province" required title="กรุณาเลือก จังหวัด">
+							<option value="">เลือกจังหวัด</option>
+						<?php
+						if(!empty($rs_province)){
+							foreach(@$rs_province as $key => $row_province){ 
+						?>
 
-                      <?php if (@$row_province['province_id'] == @$row["province_id"]) { ?>
-                        <option value="<?php echo @$row_province['province_id'];?>" selected><?php echo @$row_province['province_name'];?></option>
-                      <?php }else{ ?>
-                        <option value="<?php echo @$row_province['province_id'];?>"><?php echo @$row_province['province_name'];?></option>
-                      <?php } ?>
-                      
-					<?php 
-						} 
-					}
-					?>
-                      </select>
+						  <?php if (@$row_province['province_id'] == @$row["province_id"]) { ?>
+							<option value="<?php echo @$row_province['province_id'];?>" selected><?php echo @$row_province['province_name'];?></option>
+						  <?php }else{ ?>
+							<option value="<?php echo @$row_province['province_id'];?>"><?php echo @$row_province['province_name'];?></option>
+						  <?php } ?>
+						  
+						<?php 
+							} 
+						}
+						?>
+						  </select>
+						</div>
                     </div>
                   </div>
 
-                  <div class="form-group">
-                    <label class="col-sm-3 control-label" for="form-control-1">ชื่ออำเภอ</label>
+                  <div class="row">
+                    <label class="col-sm-3 control-label" for="amphur_name">ชื่ออำเภอ</label>
                     <div class="col-sm-9">
-                      <input id="form-control-1" name="amphur_name" class="form-control m-b-1" type="text" value="" required>
+						<div class="form-group">
+						  <input id="amphur_name" name="amphur_name" class="form-control m-b-1" type="text" value="" required title="กรุณากรอก ชื่ออำเภอ">
+						</div>
                     </div>
                   </div>
               <!-- เพิ่มอำเภอ -->
@@ -169,76 +175,86 @@ $province_id = @$_GET['province_id'];
                     <!-- เพิ่มตำบล -->
                     <input name="type"  type="hidden" value="<?php echo @$add_type; ?>" >
 
-                  <div class="form-group">
-                    <label class="col-sm-3 control-label" for="form-control-2">จังหวัด</label>
+                  <div class="row">
+                    <label class="col-sm-3 control-label" for="province_id">จังหวัด</label>
                     <div class="col-sm-9 m-b-1">
-                     <select name="province_id" id="form-control-6" class="form-control province" required>
-                        <option value="">เลือกจังหวัด</option>
-                    <?php
-					if(!empty($rs_province)){
-						foreach(@$rs_province as $key => $row_province){ 
-					?>
+						<div class="form-group">
+						 <select name="province_id" id="province_id" class="form-control province" required title="กรุณาเลือก จังหวัด">
+							<option value="">เลือกจังหวัด</option>
+						<?php
+						if(!empty($rs_province)){
+							foreach(@$rs_province as $key => $row_province){ 
+						?>
 
-                      <?php if (@$row_province['province_id'] == @$row["province_id"]) { ?>
-                        <option value="<?php echo @$row_province['province_id'];?>" selected><?php echo @$row_province['province_name'];?></option>
-                      <?php }else{ ?>
-                        <option value="<?php echo @$row_province['province_id'];?>"><?php echo @$row_province['province_name'];?></option>
-                      <?php } ?>
-                      
-                    <?php 
-						}
-					}		
-					?>
-                      </select>
+						  <?php if (@$row_province['province_id'] == @$row["province_id"]) { ?>
+							<option value="<?php echo @$row_province['province_id'];?>" selected><?php echo @$row_province['province_name'];?></option>
+						  <?php }else{ ?>
+							<option value="<?php echo @$row_province['province_id'];?>"><?php echo @$row_province['province_name'];?></option>
+						  <?php } ?>
+						  
+						<?php 
+							}
+						}		
+						?>
+						  </select>
+						</div>
                     </div>
                   </div>
 
                     <?php if (!empty($row["amphur_id"])) { ?>
           
-                  <div class="form-group">
-                    <label class="col-sm-3 control-label" for="form-control-2">อำเภอ</label>
+                  <div class="row">
+                    <label class="col-sm-3 control-label" for="amphur_id">อำเภอ</label>
                     <div class="col-sm-9 m-b-1">
-                    <select name="amphur_id" id="form-control-6" class="form-control amphur" required>
-                       <?php   
-						if(!empty($rs_amphur)){
-							foreach(@$rs_amphur as $key => $row_amphur){ 
-						?>
+						<div class="form-group">
+						<select name="amphur_id" id="amphur_id" class="form-control amphur" required title="กรุณาเลือก อำเภอ">
+						   <?php   
+							if(!empty($rs_amphur)){
+								foreach(@$rs_amphur as $key => $row_amphur){ 
+							?>
 
-                      <?php if (@$row_amphur['amphur_id'] == @$row["amphur_id"]) { ?>
-                        <option value="<?php echo @$row_amphur['amphur_id'];?>" selected><?php echo @$row_amphur['amphur_name'];?></option>
-                      <?php }else{ ?>
-                        <option value="<?php echo @$row_amphur['amphur_id'];?>"><?php echo $row_amphur['amphur_name'];?></option>
-                      <?php } ?>
-                      
-                        <?php 
+						  <?php if (@$row_amphur['amphur_id'] == @$row["amphur_id"]) { ?>
+							<option value="<?php echo @$row_amphur['amphur_id'];?>" selected><?php echo @$row_amphur['amphur_name'];?></option>
+						  <?php }else{ ?>
+							<option value="<?php echo @$row_amphur['amphur_id'];?>"><?php echo $row_amphur['amphur_name'];?></option>
+						  <?php } ?>
+						  
+							<?php 
+								}
 							}
-						}
-						?>
-                      </select>
+							?>
+						  </select>
+						</div>
                     </div>
                   </div>
                 <?php }else{ ?>
-                <div class="form-group">
-                    <label class="col-sm-3 control-label" for="form-control-2">อำเภอ</label>
+                <div class="row">
+                    <label class="col-sm-3 control-label" for="amphur_id">อำเภอ</label>
                     <div class="col-sm-9 m-b-1">
-                    <select name="amphur_id" id="form-control-6" class="form-control amphur" required>
-                        <option value="">เลือกอำเภอ</option>
-                      </select>
+						<div class="form-group">
+						<select name="amphur_id" id="amphur_id" class="form-control amphur" required title="กรุณาเลือก อำเภอ">
+							<option value="">เลือกอำเภอ</option>
+						  </select>
+						</div>
                     </div>
                   </div>
                 <?php } ?>
 
-                <div class="form-group">
-                    <label class="col-sm-3 control-label" for="form-control-1">ชื่อตำบล</label>
+                <div class="row">
+                    <label class="col-sm-3 control-label" for="district_name">ชื่อตำบล</label>
                     <div class="col-sm-9">
-                      <input id="form-control-1" name="district_name" class="form-control m-b-1" type="text" value="" required>
+						<div class="form-group">
+						  <input id="district_name" name="district_name" class="form-control m-b-1" type="text" value="" required title="กรุณากรอก ชื่อตำบล">
+						</div>
                     </div>
                   </div>
 
-                  <div class="form-group">
-                    <label class="col-sm-3 control-label" for="form-control-1">รหัสไปรษณีย์</label>
+                  <div class="row">
+                    <label class="col-sm-3 control-label" for="zipcode">รหัสไปรษณีย์</label>
                     <div class="col-sm-9">
-                      <input id="form-control-1" name="zipcode" class="form-control m-b-1" type="text" value="" required maxlength="5">
+						<div class="form-group">
+						  <input id="zipcode" name="zipcode" class="form-control m-b-1" type="text" value="" required maxlength="5" title="กรุณากรอก รหัสไปรษณีย์">
+						</div>
                     </div>
                   </div>
               <!-- เพิ่มตำบล -->
@@ -246,78 +262,88 @@ $province_id = @$_GET['province_id'];
               <?php }else{ ?>
 
                     <!-- แก้ไข -->
-                  <div class="form-group">
-                    <label class="col-sm-3 control-label" for="form-control-2">จังหวัด</label>
+                  <div class="row">
+                    <label class="col-sm-3 control-label" for="province_id">จังหวัด</label>
                     <div class="col-sm-9 m-b-1">
-                     <select  name="province_id" id="form-control-6" class="form-control province" required>
-                        <option value="">เลือกจังหวัด</option>
-                    <?php   
-					if(!empty($rs_province)){
-						foreach(@$rs_province as $key => $row_province){ ?>
+						<div class="form-group">
+						 <select  name="province_id" id="province_id" class="form-control province" required title="กรุณาเลือก จังหวัด">
+							<option value="">เลือกจังหวัด</option>
+						<?php   
+						if(!empty($rs_province)){
+							foreach(@$rs_province as $key => $row_province){ ?>
 
-                      <?php if (@$row_province['province_id'] == @$_GET["province_id"]) { ?>
-                        <option value="<?php echo @$row_province['province_id'];?>" selected><?php echo @$row_province['province_name'];?></option>
-                      <?php }else{ ?>
-                        <option value="<?php echo @$row_province['province_id'];?>"><?php echo @$row_province['province_name'];?></option>
-                      <?php } ?>
-                      
-                    <?php 
-						}
-					} 
-					?>
-                      </select>
+						  <?php if (@$row_province['province_id'] == @$_GET["province_id"]) { ?>
+							<option value="<?php echo @$row_province['province_id'];?>" selected><?php echo @$row_province['province_name'];?></option>
+						  <?php }else{ ?>
+							<option value="<?php echo @$row_province['province_id'];?>"><?php echo @$row_province['province_name'];?></option>
+						  <?php } ?>
+						  
+						<?php 
+							}
+						} 
+						?>
+						  </select>
+						</div>
                     </div>
                   </div>
 
                     <?php if (!empty($_GET["amphur_id"])) { ?>
 
-                  <div class="form-group">
-                    <label class="col-sm-3 control-label" for="form-control-2">อำเภอ</label>
+                  <div class="row">
+                    <label class="col-sm-3 control-label" for="amphur_id">อำเภอ</label>
                     <div class="col-sm-9 m-b-1">
-                    <select  name="amphur_id" id="form-control-6" class="form-control amphur" required>
-                       
-					   <?php   
-						if(!empty($rs_amphur)){
-							foreach(@$rs_amphur as $key => $row_amphur){ 
-						?>
+						<div class="form-group">
+						<select  name="amphur_id" id="amphur_id" class="form-control amphur" required title="กรุณาเลือก อำเภอ">
+						   
+						   <?php   
+							if(!empty($rs_amphur)){
+								foreach(@$rs_amphur as $key => $row_amphur){ 
+							?>
 
-                      <?php if (@$row_amphur['amphur_id'] == @$_GET["amphur_id"]) { ?>
-                        <option value="<?php echo @$row_amphur['amphur_id'];?>" selected><?php echo @$row_amphur['amphur_name'];?></option>
-                      <?php }else{ ?>
-                        <option value="<?php echo @$row_amphur['amphur_id'];?>"><?php echo @$row_amphur['amphur_name'];?></option>
-                      <?php } ?>
-                      
-                    <?php 
-						}
-					} 
-					?>
-                      </select>
+						  <?php if (@$row_amphur['amphur_id'] == @$_GET["amphur_id"]) { ?>
+							<option value="<?php echo @$row_amphur['amphur_id'];?>" selected><?php echo @$row_amphur['amphur_name'];?></option>
+						  <?php }else{ ?>
+							<option value="<?php echo @$row_amphur['amphur_id'];?>"><?php echo @$row_amphur['amphur_name'];?></option>
+						  <?php } ?>
+						  
+						<?php 
+							}
+						} 
+						?>
+						  </select>
+						</div>
                     </div>
                   </div>
                 <?php }else{ ?>
-                <div class="form-group">
-                    <label class="col-sm-3 control-label" for="form-control-2">อำเภอ</label>
+                <div class="row">
+                    <label class="col-sm-3 control-label" for="amphur_id">อำเภอ</label>
                     <div class="col-sm-9 m-b-1">
-                    <select name="amphur_id" id="form-control-6" class="form-control amphur" required>
-                        <option value="">เลือกอำเภอ</option>
-                      </select>
+						<div class="form-group">
+						<select name="amphur_id" id="amphur_id" class="form-control amphur" required title="กรุณาเลือก อำเภอ">
+							<option value="">เลือกอำเภอ</option>
+						  </select>
+						</div>
                     </div>
                   </div>
                 <?php } ?>
                   
-                <div class="form-group">
-                    <label class="col-sm-3 control-label" for="form-control-1">ชื่อตำบล</label>
+                  <div class="row">
+                    <label class="col-sm-3 control-label" for="district_name">ชื่อตำบล</label>
                     <div class="col-sm-9">
-                      <input id="form-control-1" name="district_name" class="form-control m-b-1" type="text" value="<?php echo @$row_district['district_name']; ?>" required>
-                      <input type="hidden" name="district_id" value="<?php echo @$_GET['district_id']; ?>">
+						<div class="form-group">
+						  <input id="district_name" name="district_name" class="form-control m-b-1" type="text" value="<?php echo @$row_district['district_name']; ?>" required title="กรุณากรอก ชื่อตำบล">
+						  <input type="hidden" name="district_id" value="<?php echo @$_GET['district_id']; ?>">
+						</div>
                     </div>
                   </div>
 
-                  <div class="form-group">
-                    <label class="col-sm-3 control-label" for="form-control-1">รหัสไปรษณีย์</label>
+                  <div class="row">
+                    <label class="col-sm-3 control-label" for="zipcode">รหัสไปรษณีย์</label>
                     <div class="col-sm-9">
-                      <input id="form-control-1" name="zipcode" class="form-control m-b-1" type="text" value="<?php echo @$row_zipcode["zipcode"];  ?>" required maxlength="5">
-                      <input type="hidden" name="zipcode_id" value="<?php echo @$_GET['zipcode_id']; ?>">
+						<div class="form-group">
+						  <input id="zipcode" name="zipcode" class="form-control m-b-1" type="text" value="<?php echo @$row_zipcode["zipcode"];  ?>" required maxlength="5" title="กรุณากรอก รหัสไปรษณีย์">
+						  <input type="hidden" name="zipcode_id" value="<?php echo @$_GET['zipcode_id']; ?>">
+						</div>
                     </div>
                   </div>
               <!-- แก้ไข -->

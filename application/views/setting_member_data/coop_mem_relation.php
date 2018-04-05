@@ -61,7 +61,6 @@ $id = @$_GET['id'];
 	              </div>
                   <?php echo $paging ?>
 	            </div>
-		div>
 <?php }else{ ?>
 
 			<div class="col-md-6 col-md-offset-3">
