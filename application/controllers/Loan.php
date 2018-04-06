@@ -56,10 +56,10 @@ class Loan extends CI_Controller {
 				$this->db->limit(1);
 				$row_account_trans = $this->db->get()->result_array();
 				
-				$cal_account += $row_account_trans[0]['transaction_balance'];
+				$cal_account += @$row_account_trans[0]['transaction_balance'];
 				$count_account++;
 				
-				$rs_account[$key]['transaction_balance'] = $row_account_trans[0]['transaction_balance'];
+				$rs_account[$key]['transaction_balance'] = @$row_account_trans[0]['transaction_balance'];
 			}
 			$arr_data['data_account'] = $rs_account;
 			$arr_data['count_account'] = $count_account;
@@ -204,10 +204,10 @@ class Loan extends CI_Controller {
 	}
 	public function loan_approve()
 	{
-		if ($_GET) {
+		if (@$_GET['status_to']) {
 			$data_insert = array();
-			$data_insert['loan_status'] = $_GET['status_to'];
-			$this->db->where('id', $_GET['loan_id']);
+			$data_insert['loan_status'] = @$_GET['status_to'];
+			$this->db->where('id', @$_GET['loan_id']);
 			$this->db->update('coop_loan', $data_insert);
 			
 			$this->center_function->toast('บันทึกข้อมูลเรียบร้อยแล้ว');
@@ -740,6 +740,7 @@ class Loan extends CI_Controller {
 					$value = sprintf('% 06d',@$petition_number);
 				}
 				$data_insert[$key] = @$value;
+				$data_insert['loan_status'] = '0';
 				//echo '<pre>'; print_r($value); echo '<pre>';
 			}
 			//echo '<pre>'; print_r($data_insert); echo '<pre>';

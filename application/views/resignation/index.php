@@ -103,7 +103,7 @@
                             <td ><?php echo number_format($value['money_period_1'],2); ?></td>
                             <td ><?php echo number_format($value['loan_amount_balance'],2); ?></td>
                             <td ></td>
-                            <td ><?php echo $this->center_function->ConvertToThaiDate($value['payment_date'],'1','0'); ?></td>
+                            <td ><?php echo (!empty($value['payment_date']))?$this->center_function->ConvertToThaiDate($value['payment_date'],'1','0'):''; ?></td>
                         </tr>
                         <?php
                         $money_period  += $value['money_period_1'];

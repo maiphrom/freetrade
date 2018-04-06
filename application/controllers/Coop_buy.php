@@ -24,25 +24,25 @@ class Coop_buy extends CI_Controller {
 			$this->db->where("account_buy_id = '".$data_get['account_buy_id']."'");
 			$this->db->order_by('account_buy_detail_id ASC');
 			$row = $this->db->get()->result_array();
-			$arr_data['rs_detail'] = $row;
+			$arr_data['rs_detail'] = @$row;
 		}
 		
 		$this->db->select(array('account_id','account_list','amount'));
 		$this->db->from('coop_account_buy_list');
 		$account_buy_list = $this->db->get()->result_array();
-		$arr_data['account_buy_list'] = $account_buy_list; 
+		$arr_data['account_buy_list'] = @$account_buy_list; 
 		
 		$this->db->select(array('account_bank_id','account_bank_name'));
 		$this->db->from('coop_account_bank');
 		$rs_bank = $this->db->get()->result_array();
-		$arr_data['rs_bank'] = $rs_bank; 
+		$arr_data['rs_bank'] = @$rs_bank; 
 		
 		$this->db->select(array('*'));
 		$this->db->from('coop_account_buy');
 		$this->db->order_by('account_buy_number DESC');
 		$this->db->limit(5);
 		$rs_search = $this->db->get()->result_array();
-		$arr_data['rs_search'] = $rs_search; 
+		$arr_data['rs_search'] = @$rs_search; 
 		
 		$this->libraries->template('coop_buy/index',$arr_data);
 	}
@@ -55,7 +55,7 @@ class Coop_buy extends CI_Controller {
 			$this->db->order_by('account_buy_number DESC');
 			$this->db->limit(1);
 			$row = $this->db->get()->result_array();
-			$row = $row[0];
+			$row = @$row[0];
 			
 			if(@$row['account_buy_number'] != ''){
 				$id = (int) substr($row["account_buy_number"], 6);
@@ -135,10 +135,10 @@ class Coop_buy extends CI_Controller {
 			$account_book_id = $this->account_transaction->account_process($data_account);
 			
 			$data_insert = array();
-			$data_insert['total_amount'] = $total_amount;
-			$data_insert['account_book_id'] = $account_book_id;
-			$this->db->where('account_buy_id', $account_buy_id);
-			$this->db->update('coop_account_buy', $data_insert);
+			$data_insert['total_amount'] = @$total_amount;
+			$data_insert['account_book_id'] = @$account_book_id;
+			$this->db->where('account_buy_id', @$account_buy_id);
+			$this->db->update('coop_account_buy', @$data_insert);
 			
 			echo"<script> document.location.href='".base_url(PROJECTPATH.'/coop_buy/coop_buy_pdf?account_buy_id='.$account_buy_id)."' </script>";
 			exit;
@@ -159,7 +159,7 @@ class Coop_buy extends CI_Controller {
 		$this->db->from('coop_account_buy');
 		$this->db->where("account_buy_id = '".$data_get['account_buy_id']."'");
 		$row = $this->db->get()->result_array();
-		$arr_data['row'] = $row[0];
+		$arr_data['row'] = @$row[0];
 		
 		$this->db->select(array(
 			't1.account_id',
@@ -173,7 +173,7 @@ class Coop_buy extends CI_Controller {
 		$this->db->join('coop_account_match t2', "t1.account_id = t2.match_id AND match_type = 'account_buy_list'", 'left');
 		$this->db->where("account_buy_id = '".$data_get['account_buy_id']."'");
 		$row = $this->db->get()->result_array();
-		$arr_data['rs_detail'] = $row;
+		$arr_data['rs_detail'] = @$row;
 		
 		//ลายเซ็นต์
 		//$date_signature = $arr_data['row']['buy_date'];
